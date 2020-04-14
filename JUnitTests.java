@@ -44,14 +44,14 @@ public class JUnitTests{
     }
         
     /** 
-     * Tests that a Graph returns all the packages properly
+     * Tests that the month class works as intended
      */
     @Test
     public void test001_testMonthClass() {
         
     }
     /**
-     * Tests that a Graph removes a vertex properly
+     * Tests that the month class works as intended
      */
     @Test
     public void test002_testFileManagerClass()
