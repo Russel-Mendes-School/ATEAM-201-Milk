@@ -1,24 +1,24 @@
 package application;
 
 /**
- * 
+ *
  * Month - This class holds a data node. This data node called month as the
  * following information: year, its month number, and the values in its days
  * array
  *
- * @author
+ * @author Akhsay Bodla 2020
  * @author Russel Mendes 2020
  *
  */
 public class Month {
 
   private int month, year;
-  private String monthString;
+  private String monthString; //the month name represented by the month variable
   private int[] days;
 
   /**
    * Default Constructor
-   * 
+   *
    * @param month - string namesake of the node
    * @param year  - the year of which the nodes belongs to
    */
@@ -30,7 +30,7 @@ public class Month {
         throw new IllegalArgumentException("Invalid month");
       }
     } catch (Exception e) {
-      throw new IllegalArgumentException("Invalid month");
+      throw new IllegalArgumentException("Invalid input");
     }
 
     this.year = Integer.parseInt(year);
@@ -91,7 +91,7 @@ public class Month {
 
   /**
    * For a given day within the month, insert milkWeight
-   * 
+   *
    * @param milkTot - integer value of milk weight
    * @param day     - integer value of the day
    */
@@ -111,7 +111,7 @@ public class Month {
 
   /**
    * For a given day within the month, get the milkWeight
-   * 
+   *
    * @param day - integer value of day
    * @return
    */
@@ -127,17 +127,18 @@ public class Month {
     }
   }
 
+  /**
+  * @return int - year of this month
+  */
   public int getYear() {
-    return year;
+    return this.year;
   }
 
+  /**
+  * @return String - the month this object represents
+  */
   public String getName() {
     return this.monthString;
-  }
-
-
-  public static void main(String[] args) {
-
   }
 
 }

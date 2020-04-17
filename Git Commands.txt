@@ -1,0 +1,60 @@
+Helpful git commands:
+
+
+git clone <repo url> - create a local copy of a repo
+git merge <branch name> - merge the changes from <branch name> TO the CURRENT branch
+git init - start a new repo
+
+
+Branch Commands:
+
+git checkout -b <name of new branch> - create a new branch and switch to that branch
+
+git chekcout <branch name> - switch to a branch
+
+git branch - lists all the branches, current branch should be highlighted in green
+
+git branch -d <branch name> - delete the local copy of branch
+
+git branch -D <branch name> - force the delete of a local copy (for instance if you have changes on that branch and dont want them)
+
+
+Stash Commands
+git stash save - temporarily stores all modified changes
+
+git stash pop  - restores stashed changes
+
+git stash drop - discard stashed changes
+
+git stash list - list the stash changes
+
+
+Difference (Diff) commands
+
+git diff - shows not staged file differences
+
+git diff -staged - shows file difference in the stage area
+
+git diff <branch 1> <branch 2> - shows the difference between the two branches
+
+
+Reset Commands
+git reset <file name> - resets unstaged changes in the file and preserves it
+
+git reset <commit name> - locally resets all changes to the specified name
+
+git reset -hard <commit name> - forces the reset (if the "hard" flag is incorrect try -H instead)
+
+Remove commands
+git rm <file> - deletes the file from current directory and automatically stages the deletion
+
+Status Commands
+git status - show unstaged modifications to be commited
+
+
+Push Commands
+git push <branch's upstream> <branch name> - the upstream will be origin for us, push the staged changes to the upstream
+
+git push -all origin - push all branch changes to origin (on github)
+
+git push origin :<Branch name> - delete the branch on github
