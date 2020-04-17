@@ -60,7 +60,11 @@ public class Farm {
   public int getTotalMilk() {
     int totalMilk = 0;
 
-    return 0;
+    for(int i = 0; i < farmData.size(); i++){
+      totalMilk += farmData.get(i).totalMilk();
+    }
+
+    return totalMilk;
   }
 
   public String toString() {
