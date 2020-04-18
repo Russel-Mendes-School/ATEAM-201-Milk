@@ -45,8 +45,10 @@ git reset <commit name> - locally resets all changes to the specified name
 
 git reset -hard <commit name> - forces the reset (if the "hard" flag is incorrect try -H instead)
 
+
 Remove commands
 git rm <file> - deletes the file from current directory and automatically stages the deletion
+
 
 Status Commands
 git status - show unstaged modifications to be commited

@@ -19,7 +19,7 @@ public class Month {
   /**
    * Default Constructor
    *
-   * @param month - string namesake of the node
+   * @param month - the number of the month to be passed in (1: january etc)
    * @param year  - the year of which the nodes belongs to
    */
   public Month(String month, String year) {
@@ -139,6 +139,19 @@ public class Month {
   */
   public String getName() {
     return this.monthString;
+  }
+
+  /**
+  * @return int - the total milk stored in this Month
+  */
+  protected int totalMilk() {
+    int totalMilk = 0;
+
+    for(int i = 0; i < days.length; i++) {
+        totalMilk += days[i];
+    }
+
+    return totalMilk;
   }
 
 }
