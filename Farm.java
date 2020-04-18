@@ -1,41 +1,52 @@
 package application;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
+ * Farm - Stores and manages the milk produced by a dairy farm
  *
- * Farm - TODO Describe purpose of type
- *
- * @author
+ * @author Ben Rinvelt
  * @author Russel Mendes
- *
  */
-public class Farm {
+public class Farm
+{
   private String ID;
 
-  protected HashMap<String, Month> farmData = new HashMap<String, Month>();
+  protected HashMap<String, Month> farmData;
 
-  public Farm(String ID) {
+  /** Creates a new Farm */
+  public Farm(String ID)
+  {
     this.ID = ID;
+    farmData = new HashMap<String, Month>();
   }
 
-  public String getID() {
+  /**
+   * Return the farms ID
+   * 
+   * @return String ID
+   */
+  public String getID()
+  {
     return ID;
   }
 
   /**
    * update the milk weights on a given date
-   *
+   * 
    * @param milkWeight   - integer value of milk weights
    * @param yearMonthKey - year+month string value key that access the month
    * @param day          - integer value of day
    */
-  protected void updateMilkOnDate(int milkWeight, String month, String year,
-      int day) {
+  protected void updateMilkOnDate(int milkWeight, String month, String year, int day)
+  {
     String yearMonthKey = year + month;
 
     // Make sure that a month exists, otherwise add it
-    if (this.farmData.get(yearMonthKey) == null) {
+    if (this.farmData.get(yearMonthKey) == null)
+    {
       this.farmData.put(yearMonthKey, new Month(month, year));
     }
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
@@ -43,31 +54,38 @@ public class Farm {
 
   /**
    * add a new month to the farmData
-   *
+   * 
    * @param month - integer
    * @param year  - integer
    */
-  private void addNewMonth(String month, String year) {
+  private void addNewMonth(String month, String year)
+  {
     Month newMonth = new Month(month, year);
     String yearMonthKey = year + month;
+
     this.farmData.put(yearMonthKey, newMonth);
   }
 
   /**
-  * Calculate the total milk stored in this farm
-  * @return the total milk in this farm
-  */
-  public int getTotalMilk() {
+   * Get the total milk contributed by a farm
+   * 
+   * @return Total Milk integer
+   */
+  public int getTotalMilk()
+  {
     int totalMilk = 0;
+    Iterator<Entry<String, Month>> farmDataIterator = farmData.entrySet().iterator();// iterator for Months HashMap
 
-    for(int i = 0; i < farmData.size(); i++){
-      totalMilk += farmData.get(i).totalMilk();
+    while (farmDataIterator.hasNext())
+    {
+      Entry<String, Month> mapElement = farmDataIterator.next();
+      totalMilk += mapElement.getValue().totalMilk();
     }
-
     return totalMilk;
   }
 
-  public String toString() {
-    return ID + "has produced " + getTotalMilk() + "Gallons of Milk in total.";
+  public String toString()
+  {
+    return ID + " has produced " + getTotalMilk() + " Gallons of Milk in total.";
   }
 }
