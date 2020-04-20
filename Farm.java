@@ -1,5 +1,6 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -82,6 +83,14 @@ public class Farm
       totalMilk += mapElement.getValue().totalMilk();
     }
     return totalMilk;
+  }
+
+  public ArrayList<Month> getMonthsForYear(int year) {
+	  ArrayList<Month> months = new ArrayList<Month>();
+	  for (Month m : farmData.values()) {
+		  if (m.getYear() == year) months.add(m);
+	  }
+	  return months;
   }
 
   public String toString()

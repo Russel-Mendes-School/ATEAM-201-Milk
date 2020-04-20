@@ -140,6 +140,10 @@ public class Month {
   public String getName() {
     return this.monthString;
   }
+  
+  public int getMonthNum() {
+	  return month;
+  }
 
   /**
   * @return int - the total milk stored in this Month

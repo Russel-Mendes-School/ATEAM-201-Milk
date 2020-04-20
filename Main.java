@@ -1,8 +1,13 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -36,6 +41,8 @@ public class Main extends Application {
   private int actionFlag;
 
   // Init Fields
+  // BORDER PANE
+  BorderPane borderPaneRoot;
   // TOP PANEL
   Label title;
   Label spacerTop;
@@ -68,7 +75,7 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
 
-    BorderPane borderPaneRoot = new BorderPane();
+    borderPaneRoot = new BorderPane();
 
     Scene mainScene = new Scene(borderPaneRoot, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -91,7 +98,7 @@ public class Main extends Application {
     // loadBox.setOnAction(e -> System.out.println("Calleed"));
     loadBox.setOnAction(e -> handleLoadSelection());
     // Edit Combo box
-    String[] editOptions = {"Edit File", "Edit Farm", ""};
+    String[] editOptions = {"Edit File", "Edit Farm", "Delete Farm", ""};
     editBox =
         new ComboBox<String>(FXCollections.observableArrayList(editOptions));
     editBox.setOnAction(e -> handleEditSelection());
@@ -224,43 +231,46 @@ public class Main extends Application {
 
     } else if (commandFlag.equals("Load Dir")) {
       this.loadDataFromDir();
-     
+
     } else if (commandFlag.equals("Edit File")) {
       this.editFile();
-      
+
     } else if (commandFlag.equals("Edit Farm")) {
       this.editFarm();
-      
+
+    } else if (commandFlag.equals("Delete Farm")) {
+      this.deleteFarm();
+
     } else if (commandFlag.equals("Export File")) {
       this.newExportFile();
-      
+
     } else if (commandFlag.equals("Export Stats")) {
       this.newExportStats();
-      
+
     } else if (commandFlag.equals("New Farm")) {
       this.newCustomFarm();
-      
+
     } else if (commandFlag.equals("Max Stats")) {
       this.showMaxSales();
-      
+
     } else if (commandFlag.equals("Min Sales")) {
       this.showMinSales();
-      
+
     } else if (commandFlag.equals("Avg Sales")) {
       this.showAvgSales();
-      
+
     } else if (commandFlag.equals("Dev. Sales")) {
       this.showDevSales();
-      
+
     } else if (commandFlag.equals("Farm Report")) {
       this.farmReport();
-      
+
     } else if (commandFlag.equals("Annual Report")) {
       this.annualReport();
-      
+
     } else if (commandFlag.equals("Monthly Sales")) {
       this.monthlyReport();
-      
+
     } else if (commandFlag.equals("Data Range Report")) {
       this.dateRangeReport();
     } else {
@@ -269,6 +279,8 @@ public class Main extends Application {
     }
 
   }
+
+
 
   /**
    * Display the command on the screen via a text field
@@ -366,9 +378,10 @@ public class Main extends Application {
 
   // Commands demanded by Rubric
 
+  @SuppressWarnings("rawtypes")
   private void farmReport() {
     String targetFarm;
-    String targetyear;
+    int targetYear;
     // Prompt User
 
     // Get Info
@@ -377,6 +390,87 @@ public class Main extends Application {
 
     // Response
 
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.msgTextField.setText("Farm ID: ");
+      this.actionFlag++;
+      return;
+    }
+    if (actionFlag == 1) {
+      
+      String[] args = this.UTITextField.getText().split(",");
+      targetFarm = args[0];
+      targetYear = Integer.parseInt(args[1]);
+      this.msgTextField.clear();
+
+      if(!farmMap.containsKey(targetFarm)) {
+        this.msgTextField.setText("Farm Does Not Exist");
+        return;
+      }
+      
+      // Vbox
+      VBox vBox = new VBox();
+
+      ObservableList list = vBox.getChildren();
+
+      ArrayList<TextField> lines = new ArrayList<TextField>();
+
+      // HashMap<String, Month> farmData = farmMap.get(targetFarm).farmData;
+
+      int totalMilkOfYear = 0;
+      List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
+
+      Collections.sort(months, new Comparator<Month>() {
+
+        public int compare(Month m1, Month m2) {
+          return m1.getMonthNum() - m2.getMonthNum();
+        }
+      });
+
+      for (Month m : months) {
+        totalMilkOfYear += m.totalMilk();
+      }
+
+      lines.add(new TextField("FarmID: " + targetFarm + " Year " + targetYear));
+      for (Month m : months) {
+        int milk = m.totalMilk();
+        int percent = (milk * 100) / totalMilkOfYear;
+        lines.add(
+            new TextField(m.getName() + ": " + milk + " (" + percent + "%)"));
+      }
+      lines.add(new TextField("Total: " + totalMilkOfYear));
+
+      list.addAll(lines);
+
+      this.borderPaneRoot.setBottom(vBox);
+      this.msgTextField.setText("Task Completed Successfully");
+      this.UTITextField.clear();
+      System.out.println(Main.farmMap.size());
+      actionFlag = 0;
+      return;
+    }
+  }
+  
+  private void deleteFarm() {
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.msgTextField.setText("Purge Farm ID: ");
+      this.actionFlag++;
+      return;
+    }
+    if (actionFlag == 1) {
+      
+      String deleteID = this.UTITextField.getText();
+      farmMap.remove(deleteID);
+
+
+      
+      this.msgTextField.clear();
+      this.msgTextField.setText("Task Completed Successfully");
+      actionFlag = 0;
+      return;
+    }
+ 
   }
 
   private void annualReport() {
@@ -405,6 +499,7 @@ public class Main extends Application {
       FileManager.readFromFile(path);
       this.msgTextField.clear();
       this.msgTextField.setText("Task Completed Succesfully");
+      this.UTITextField.clear();
       System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
@@ -414,6 +509,22 @@ public class Main extends Application {
   }
 
   private void loadDataFromDir() {
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.msgTextField.setText("File Folder Path: ");
+      this.actionFlag++;
+      return;
+    }
+    if (actionFlag == 1) {
+      String path = this.UTITextField.getText();
+      FileManager.readFromDir(path);
+      this.msgTextField.clear();
+      this.msgTextField.setText("Task Completed Succesfully");
+      this.UTITextField.clear();
+      System.out.println(Main.farmMap.size());
+      actionFlag = 0;
+      return;
+    }
 
   }
 
