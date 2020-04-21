@@ -12,7 +12,7 @@ package application;
  */
 public class Month {
 
-  private int month, year;
+  protected int month, year;
   private String monthString; //the month name represented by the month variable
   private int[] days;
 
@@ -143,6 +143,10 @@ public class Month {
   
   public int getMonthNum() {
 	  return month;
+  }
+  
+  public int[] getDays() {
+    return this.days;
   }
 
   /**

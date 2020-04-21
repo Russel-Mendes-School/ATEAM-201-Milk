@@ -39,6 +39,8 @@ public class Main extends Application {
   protected static HashMap<String, Farm> farmMap = new HashMap<String, Farm>();
   private String commandFlag;
   private int actionFlag;
+  private String exportFarmID;
+
 
   // Init Fields
   // BORDER PANE
@@ -103,7 +105,7 @@ public class Main extends Application {
         new ComboBox<String>(FXCollections.observableArrayList(editOptions));
     editBox.setOnAction(e -> handleEditSelection());
     // New Combo box
-    String[] newOptions = {"Export File", "Export Stats", "New Farm", ""};
+    String[] newOptions = {"Export Farm", "Export Stats", "New Farm", ""};
     newBox =
         new ComboBox<String>(FXCollections.observableArrayList(newOptions));
     newBox.setOnAction(e -> handleNewSelection());
@@ -241,8 +243,8 @@ public class Main extends Application {
     } else if (commandFlag.equals("Delete Farm")) {
       this.deleteFarm();
 
-    } else if (commandFlag.equals("Export File")) {
-      this.newExportFile();
+    } else if (commandFlag.equals("Export Farm")) {
+      this.newExportFarmToFile();
 
     } else if (commandFlag.equals("Export Stats")) {
       this.newExportStats();
@@ -382,13 +384,6 @@ public class Main extends Application {
   private void farmReport() {
     String targetFarm;
     int targetYear;
-    // Prompt User
-
-    // Get Info
-
-    // Process
-
-    // Response
 
     if (actionFlag == 0) {
       this.msgTextField.clear();
@@ -397,17 +392,17 @@ public class Main extends Application {
       return;
     }
     if (actionFlag == 1) {
-      
+
       String[] args = this.UTITextField.getText().split(",");
       targetFarm = args[0];
       targetYear = Integer.parseInt(args[1]);
       this.msgTextField.clear();
 
-      if(!farmMap.containsKey(targetFarm)) {
+      if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
         return;
       }
-      
+
       // Vbox
       VBox vBox = new VBox();
 
@@ -450,7 +445,10 @@ public class Main extends Application {
       return;
     }
   }
-  
+
+  /**
+   * Delete a farm from the data structure
+   */
   private void deleteFarm() {
     if (actionFlag == 0) {
       this.msgTextField.clear();
@@ -459,33 +457,43 @@ public class Main extends Application {
       return;
     }
     if (actionFlag == 1) {
-      
+
       String deleteID = this.UTITextField.getText();
       farmMap.remove(deleteID);
 
-
-      
       this.msgTextField.clear();
       this.msgTextField.setText("Task Completed Successfully");
       actionFlag = 0;
       return;
     }
- 
   }
 
+  /**
+   * Create an annual report for a farm
+   */
   private void annualReport() {
 
   }
+  
 
+  /**
+   * Create an monthly report for a farm
+   */
   private void monthlyReport() {
 
   }
 
+  /**
+   * Give a repornt depending on a range
+   */
   private void dateRangeReport() {
 
   }
 
   // Commands Based on GUI Selection
+  /**
+   * Load data from a csv/txt file into the data structure
+   */
   private void loadDataFromCSV() {
 
     if (actionFlag == 0) {
@@ -504,10 +512,11 @@ public class Main extends Application {
       actionFlag = 0;
       return;
     }
-
-
   }
 
+  /**
+   * Load every file in a folder into the data structure
+   */
   private void loadDataFromDir() {
     if (actionFlag == 0) {
       this.msgTextField.clear();
@@ -536,14 +545,59 @@ public class Main extends Application {
 
   }
 
-  private void newExportFile() {
+  private void newExportFarmToFile() {
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.msgTextField.setText("Please Give Target Farm: ");
+      this.actionFlag++;
+      return;
+    }
+    if (actionFlag == 1) {
+      String farmID = this.UTITextField.getText();
+
+      // Check if input is valid
+      if (farmID == null || !farmMap.containsKey(farmID)) {
+        this.msgTextField.clear();
+        this.msgTextField.setText("Please give a real ID");
+        return;
+      }
+      this.exportFarmID = farmID;
+
+      this.msgTextField.clear();
+      this.msgTextField.setText("Please give export file path:");
+      actionFlag++;
+      return;
+    }
+    if (actionFlag == 2) {
+      String filePath = this.UTITextField.getText();
+
+      try {
+        FileManager.exportFarmToFile(filePath, this.exportFarmID);
+      } catch (Exception e) {
+
+      }
+
+
+
+      this.msgTextField.clear();
+      this.msgTextField.setText("Task Completed Succesfully:");
+      actionFlag = 0;
+      return;
+    }
+
 
   }
 
+  /**
+   * Export the statistics of the data structure into a text file
+   */
   private void newExportStats() {
 
   }
 
+  /**
+   * Allows the user to create a custom from the GUI
+   */
   private void newCustomFarm() {
 
   }
@@ -557,14 +611,23 @@ public class Main extends Application {
 
   }
 
+  /**
+   * Shows the minimum sales a farm made for a given month out of x months
+   */
   private void showMinSales() {
 
   }
 
+  /**
+   * Shows the average sales a farm made monthly
+   */
   private void showAvgSales() {
 
   }
 
+  /**
+   * Shows the deviation in sales for a specified farm
+   */
   private void showDevSales() {
 
   }

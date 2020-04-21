@@ -2,8 +2,12 @@ package application;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 /**
  * This class handles reading data from files and also exporting to files
@@ -74,6 +78,36 @@ public class FileManager {
 
   public static void write(String farmID) {
 
+  }
+
+  public static void exportFarmToFile(String path, String farmID)
+      throws FileNotFoundException, UnsupportedEncodingException {
+    PrintWriter writer = new PrintWriter(path, "UTF-8");
+    writer.println("Date,FarmID,Weight");
+    Farm targetFarm = Main.farmMap.get(farmID);
+
+    ArrayList<Month> allMonths = targetFarm.getAllMonths();
+    String dataString = "";
+
+    for (Month m : allMonths) {
+      String year = Integer.toString(m.year);
+      String month = Integer.toString(m.month);
+      int[] days = m.getDays();
+      for (int i = 0; i < days.length; i++) {
+        dataString += year;
+        dataString += "-";
+        dataString += month;
+        dataString += "-";
+        dataString += Integer.toString(i + 1);
+        dataString += ",";
+        dataString += farmID;
+        dataString += ",";
+        dataString += Integer.toString(days[i]);
+        writer.println(dataString);
+        dataString = "";
+      }
+    }
+    writer.close();
   }
 
 }

@@ -11,15 +11,14 @@ import java.util.Map.Entry;
  * @author Ben Rinvelt
  * @author Russel Mendes
  */
-public class Farm
-{
+public class Farm {
   private String ID;
 
   protected HashMap<String, Month> farmData;
+  protected ArrayList<String> keyList;
 
   /** Creates a new Farm */
-  public Farm(String ID)
-  {
+  public Farm(String ID) {
     this.ID = ID;
     farmData = new HashMap<String, Month>();
   }
@@ -29,8 +28,7 @@ public class Farm
    * 
    * @return String ID
    */
-  public String getID()
-  {
+  public String getID() {
     return ID;
   }
 
@@ -41,13 +39,12 @@ public class Farm
    * @param yearMonthKey - year+month string value key that access the month
    * @param day          - integer value of day
    */
-  protected void updateMilkOnDate(int milkWeight, String month, String year, int day)
-  {
+  protected void updateMilkOnDate(int milkWeight, String month, String year,
+      int day) {
     String yearMonthKey = year + month;
 
     // Make sure that a month exists, otherwise add it
-    if (this.farmData.get(yearMonthKey) == null)
-    {
+    if (this.farmData.get(yearMonthKey) == null) {
       this.farmData.put(yearMonthKey, new Month(month, year));
     }
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
@@ -59,11 +56,10 @@ public class Farm
    * @param month - integer
    * @param year  - integer
    */
-  private void addNewMonth(String month, String year)
-  {
+  private void addNewMonth(String month, String year) {
     Month newMonth = new Month(month, year);
     String yearMonthKey = year + month;
-
+    this.keyList.add(yearMonthKey);
     this.farmData.put(yearMonthKey, newMonth);
   }
 
@@ -72,13 +68,12 @@ public class Farm
    * 
    * @return Total Milk integer
    */
-  public int getTotalMilk()
-  {
+  public int getTotalMilk() {
     int totalMilk = 0;
-    Iterator<Entry<String, Month>> farmDataIterator = farmData.entrySet().iterator();// iterator for Months HashMap
+    Iterator<Entry<String, Month>> farmDataIterator =
+        farmData.entrySet().iterator();// iterator for Months HashMap
 
-    while (farmDataIterator.hasNext())
-    {
+    while (farmDataIterator.hasNext()) {
       Entry<String, Month> mapElement = farmDataIterator.next();
       totalMilk += mapElement.getValue().totalMilk();
     }
@@ -86,15 +81,26 @@ public class Farm
   }
 
   public ArrayList<Month> getMonthsForYear(int year) {
-	  ArrayList<Month> months = new ArrayList<Month>();
-	  for (Month m : farmData.values()) {
-		  if (m.getYear() == year) months.add(m);
-	  }
-	  return months;
+    ArrayList<Month> months = new ArrayList<Month>();
+    for (Month m : farmData.values()) {
+      if (m.getYear() == year)
+        months.add(m);
+    }
+    return months;
   }
 
-  public String toString()
-  {
-    return ID + " has produced " + getTotalMilk() + " Gallons of Milk in total.";
+  protected ArrayList<Month> getAllMonths() {
+    ArrayList<Month> months = new ArrayList<Month>();
+    for (Month m : farmData.values()) {
+      months.add(m);
+    }
+
+    return months;
+  }
+
+
+  public String toString() {
+    return ID + " has produced " + getTotalMilk()
+        + " Gallons of Milk in total.";
   }
 }
