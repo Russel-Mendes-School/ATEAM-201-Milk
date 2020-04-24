@@ -11,6 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
@@ -82,13 +84,11 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
 
     borderPaneRoot = new BorderPane();
-
     Scene mainScene = new Scene(borderPaneRoot, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Add the stuff and set the primary stage
     primaryStage.setTitle(APP_TITLE);
     primaryStage.setScene(mainScene);
-
 
     // TOP PANEL
     // Create Title
@@ -125,7 +125,6 @@ public class Main extends Application {
     asgBox = new ComboBox<String>(
         FXCollections.observableArrayList(AssignmentOptions));
     asgBox.setOnAction(e -> handleAsgSelection());
-
     // Packing
     topHBox = new HBox();
     topHBox.getChildren().addAll(title, spacerTop, loadBox, editBox, newBox,
@@ -141,7 +140,6 @@ public class Main extends Application {
     msgTextField = new TextField();
     msgTextField.setPrefWidth(400);
     msgTextField.setPrefHeight(100);
-
     msgTextField.setPrefHeight(150);
     msgTextField.setMaxWidth(400);
     // Spacer
@@ -149,7 +147,6 @@ public class Main extends Application {
     // Packing
     VBox leftVBox = new VBox();
     leftVBox.getChildren().addAll(spacerLeft, msgBoxLabel, msgTextField);
-
     borderPaneRoot.setLeft(leftVBox);
 
     // CENTER PANEL
@@ -161,10 +158,8 @@ public class Main extends Application {
     UTITextField = new TextField();
     UTITextField.setPrefWidth(100);
     UTITextField.setPrefHeight(200);
-
     UTITextField.setPrefHeight(200);
     UTITextField.setMaxWidth(200);
-
     // Spacer
     spacerCenter = new Label("        ");
     // Packing
@@ -198,7 +193,6 @@ public class Main extends Application {
       this.UTITextField.clear();
       this.borderPaneRoot.setBottom(null);
     });
-
     // Spacer
     spacerRight = new Label("        ");
     // Packing
@@ -211,12 +205,10 @@ public class Main extends Application {
     // Bottom Panel
     // Going to be a VBOX of info. This will be populated by functions
 
-
-
     primaryStage.show();
   }
 
-  // helper functions
+  // HELPER FUNCTIONS
   /**
    * add a new farm with a given ID
    * 
@@ -397,9 +389,7 @@ public class Main extends Application {
     showLoadSelection(command);
   }
 
-
-  // Commands demanded by Rubric
-
+  // ASSIGNMENT FUNCTIONS
   @SuppressWarnings("rawtypes")
   /**
    * Prompt user for a farm id and year (or use all available data)
@@ -432,16 +422,9 @@ public class Main extends Application {
         return;
       }
 
-      // Vbox
-      VBox vBox = new VBox();
+      ArrayList<String> lines = new ArrayList<String>();
 
-      ObservableList list = vBox.getChildren();
-
-      ArrayList<TextField> lines = new ArrayList<TextField>();
-
-      // HashMap<String, Month> farmData = farmMap.get(targetFarm).farmData;
-
-      int totalMilkOfYear = 0;
+      float totalMilkOfYear = 0;
       List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
       Collections.sort(months, new Comparator<Month>() {
@@ -455,21 +438,29 @@ public class Main extends Application {
         totalMilkOfYear += m.totalMilk();
       }
 
-      lines.add(new TextField("FarmID: " + targetFarm + " Year " + targetYear));
+      lines.add("FarmID: " + targetFarm + " Year " + targetYear);
       for (Month m : months) {
-        int milk = m.totalMilk();
-        int percent = (milk * 100) / totalMilkOfYear;
-        lines.add(
-            new TextField(m.getName() + ": " + milk + " (" + percent + "%)"));
+        float milk = m.totalMilk();
+        float percent = (milk * 100) / totalMilkOfYear;
+        lines.add(m.getName() + ": " + milk + " (" + percent + "%)");
       }
-      lines.add(new TextField("Total: " + totalMilkOfYear));
+      lines.add("Total: " + totalMilkOfYear);
 
-      list.addAll(lines);
+      VBox masterVbox = new VBox();
+      for (int i = 0; i < lines.size(); i++) {
+        Label tmpLabel = new Label();
+        tmpLabel.setText(lines.get(i));
+        masterVbox.getChildren().add(tmpLabel);
+      }
 
-      this.borderPaneRoot.setBottom(vBox);
+      ScrollPane sp = new ScrollPane();
+      sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      sp.prefHeightProperty().set(300);
+      sp.setContent(masterVbox);
+
+      this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -521,20 +512,13 @@ public class Main extends Application {
       targetYear = Integer.parseInt(args);
       this.msgTextField.clear();
 
-      // Vbox
-      VBox vBox = new VBox();
-
-      ObservableList list = vBox.getChildren();
-
-      ArrayList<TextField> lines = new ArrayList<TextField>();
-      lines.add(new TextField("Year: "));
+      ArrayList<String> lines = new ArrayList<String>();
 
       // Since we know all farms we can parse through farm names
-
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
-      int totalMilkOfEveryFarm = 0;
+      float totalMilkOfEveryFarm = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
@@ -545,26 +529,39 @@ public class Main extends Application {
         totalMilkOfEveryFarm += totalMilkOfFarmInYear;
       }
 
-      lines.add(new TextField("Total: " + totalMilkOfEveryFarm));
-
+      lines.add("Total: " + totalMilkOfEveryFarm);
+      float maxPercent = 0;
+      String maxFarm = tempFarmNames.get(0);
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
-        int totalMilkOfFarmInYear = 0;
+        float totalMilkOfFarmInYear = 0;
         for (Month m : months) {
           totalMilkOfFarmInYear += m.totalMilk();
         }
         float percent = totalMilkOfFarmInYear / totalMilkOfEveryFarm;
-        lines.add(new TextField(
-            targetFarm + ": " + totalMilkOfFarmInYear + " (" + percent + "%)"));
+        if (percent > maxPercent) {
+          maxFarm = targetFarm;
+        }
+        lines.add(
+            targetFarm + ": " + totalMilkOfFarmInYear + " (" + percent + "%)");
       }
 
-      list.addAll(lines);
+      VBox masterVbox = new VBox();
+      for (int i = 0; i < lines.size(); i++) {
+        Label tmpLabel = new Label();
+        tmpLabel.setText(lines.get(i));
+        masterVbox.getChildren().add(tmpLabel);
+      }
 
-      this.borderPaneRoot.setBottom(vBox);
+      ScrollPane sp = new ScrollPane();
+      sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      sp.prefHeightProperty().set(300);
+      sp.setContent(masterVbox);
+
+      this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -596,25 +593,19 @@ public class Main extends Application {
       targetMonth = Integer.parseInt(args[1]);
       this.msgTextField.clear();
 
-      // Vbox
-      VBox vBox = new VBox();
-
-      ObservableList list = vBox.getChildren();
-
-      ArrayList<TextField> lines = new ArrayList<TextField>();
-      lines
-          .add(new TextField("Year: " + targetYear + " Month: " + targetMonth));
+      ArrayList<String> lines = new ArrayList<String>();
+      lines.add("Year: " + targetYear + " Month: " + targetMonth);
 
       // Since we know all farms we can parse through farm names
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
-      int totalMilkOfEveryFarmMonthly = 0;
+      float totalMilkOfEveryFarmMonthly = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
-        int totalMilkOfFarmInMonth = 0;
+        float totalMilkOfFarmInMonth = 0;
         for (Month m : months) {
           if (m.month == targetMonth) {
             totalMilkOfFarmInMonth = m.totalMilk();
@@ -623,29 +614,38 @@ public class Main extends Application {
         totalMilkOfEveryFarmMonthly += totalMilkOfFarmInMonth;
       }
 
-      lines.add(new TextField("Total: " + totalMilkOfEveryFarmMonthly));
+      lines.add("Total: " + totalMilkOfEveryFarmMonthly);
 
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
-        int totalMilkOfFarmInMonth = 0;
+        float totalMilkOfFarmInMonth = 0;
         for (Month m : months) {
           if (m.month == targetMonth) {
             totalMilkOfFarmInMonth = m.totalMilk();
           }
         }
         float percent = totalMilkOfFarmInMonth / totalMilkOfEveryFarmMonthly;
-        lines.add(new TextField(targetFarm + ": " + totalMilkOfFarmInMonth
-            + " (" + percent + "%)"));
+        lines.add(
+            targetFarm + ": " + totalMilkOfFarmInMonth + " (" + percent + "%)");
       }
 
-      list.addAll(lines);
+      VBox masterVbox = new VBox();
+      for (int i = 0; i < lines.size(); i++) {
+        Label tmpLabel = new Label();
+        tmpLabel.setText(lines.get(i));
+        masterVbox.getChildren().add(tmpLabel);
+      }
 
-      this.borderPaneRoot.setBottom(vBox);
+      ScrollPane sp = new ScrollPane();
+      sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      sp.prefHeightProperty().set(300);
+      sp.setContent(masterVbox);
+
+      this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -685,26 +685,20 @@ public class Main extends Application {
       endDay = Integer.parseInt(args[1].split(",")[1]);
       this.msgTextField.clear();
 
-      // Vbox
-      VBox vBox = new VBox();
-
-      ObservableList list = vBox.getChildren();
-
-      ArrayList<TextField> lines = new ArrayList<TextField>();
-      lines.add(new TextField(
-          "Year: " + targetYear + " Month: " + startMonth + " Day: " + startDay
-              + " || EndMonth: " + endMonth + " End Day: " + endDay));
+      ArrayList<String> lines = new ArrayList<String>();
+      lines.add("Year: " + targetYear + " Month: " + startMonth + " Day: "
+          + startDay + " || EndMonth: " + endMonth + " End Day: " + endDay);
 
       // Since we know all farms we can parse through farm names
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
-      int totalMilkOfEveryFarmRange = 0;
+      float totalMilkOfEveryFarmRange = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
-        int totalMilkOfFarmInRange = 0;
+        float totalMilkOfFarmInRange = 0;
         for (Month m : months) {
           if (m.month >= startMonth || m.month <= endMonth) {
             int[] days = m.getDays();
@@ -735,13 +729,13 @@ public class Main extends Application {
         totalMilkOfEveryFarmRange += totalMilkOfFarmInRange;
       }
 
-      lines.add(new TextField("Total: " + totalMilkOfEveryFarmRange));
+      lines.add("Total: " + totalMilkOfEveryFarmRange);
 
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
-        int totalMilkOfFarmInRange = 0;
+        float totalMilkOfFarmInRange = 0;
         for (Month m : months) {
           if (m.month >= startMonth || m.month <= endMonth) {
             int[] days = m.getDays();
@@ -770,16 +764,25 @@ public class Main extends Application {
           }
         }
         float percent = totalMilkOfEveryFarmRange / totalMilkOfFarmInRange;
-        lines.add(new TextField(targetFarm + ": " + totalMilkOfFarmInRange
-            + " (" + percent + "%)"));
+        lines.add(
+            targetFarm + ": " + totalMilkOfFarmInRange + " (" + percent + "%)");
       }
 
-      list.addAll(lines);
+      VBox masterVbox = new VBox();
+      for (int i = 0; i < lines.size(); i++) {
+        Label tmpLabel = new Label();
+        tmpLabel.setText(lines.get(i));
+        masterVbox.getChildren().add(tmpLabel);
+      }
 
-      this.borderPaneRoot.setBottom(vBox);
+      ScrollPane sp = new ScrollPane();
+      sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      sp.prefHeightProperty().set(300);
+      sp.setContent(masterVbox);
+
+      this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -803,7 +806,6 @@ public class Main extends Application {
       this.msgTextField.clear();
       this.msgTextField.setText("Task Completed Succesfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -821,12 +823,16 @@ public class Main extends Application {
     }
     if (actionFlag == 1) {
       String path = this.UTITextField.getText();
-      FileManager.readFromDir(path);
+      String response = FileManager.readFromDir(path);
       this.msgTextField.clear();
-      this.msgTextField.setText("Task Completed Succesfully");
+
+      if (response == null) {
+        this.msgTextField.setText("Task Completed Succesfully");
+      } else {
+        this.msgTextField.setText(response);
+      }
+
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
-//      System.out.println(farmMap.values());
       actionFlag = 0;
       return;
     }
@@ -934,7 +940,6 @@ public class Main extends Application {
         }
       });
 
-
       lines.add(new TextField("FarmID: " + targetFarm + " Year " + targetYear));
       for (Month m : months) {
         int maxMilk = 0;
@@ -952,7 +957,6 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -981,16 +985,12 @@ public class Main extends Application {
         return;
       }
 
-      // Vbox
       VBox vBox = new VBox();
 
       ObservableList list = vBox.getChildren();
 
       ArrayList<TextField> lines = new ArrayList<TextField>();
 
-      // HashMap<String, Month> farmData = farmMap.get(targetFarm).farmData;
-
-      int totalMilkOfYear = 0;
       List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
 
       Collections.sort(months, new Comparator<Month>() {
@@ -1018,7 +1018,7 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
+      // System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -1045,7 +1045,6 @@ public class Main extends Application {
         return;
       }
 
-      // Vbox
       VBox vBox = new VBox();
 
       ObservableList list = vBox.getChildren();
@@ -1078,11 +1077,9 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
-
   }
 
   /**
@@ -1148,7 +1145,6 @@ public class Main extends Application {
         lines.add(new TextField(m.getName() + ": " + dev));
       }
 
-
       monthlyAvg = monthlyRunningTotal / months.size();
       for (Month m : months) {
         int[] days = m.getDays();
@@ -1167,7 +1163,6 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }

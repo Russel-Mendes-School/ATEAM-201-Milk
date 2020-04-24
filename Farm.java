@@ -46,7 +46,7 @@ public class Farm {
     // Make sure that a month exists, otherwise add it
     if (this.farmData.get(yearMonthKey) == null)
       this.farmData.put(yearMonthKey, new Month(month, year));
-    
+
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
   }
 
@@ -82,10 +82,19 @@ public class Farm {
 
   public ArrayList<Month> getMonthsForYear(int year) {
     ArrayList<Month> months = new ArrayList<Month>();
-    for (Month m : farmData.values()) {
-      if (m.getYear() == year)
-        months.add(m);
+
+    // Populate the months
+    for (int i = 0; i < 12; i++) {
+      months.add(new Month(Integer.toString(i + 1), Integer.toString(year)));
     }
+
+    // Replace with valid months
+    for (Month m : farmData.values()) {
+      if (m.getYear() == year) {
+        months.set(m.getMonthNum() - 1, m);
+      }
+    }
+
     return months;
   }
 

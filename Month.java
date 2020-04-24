@@ -13,7 +13,8 @@ package application;
 public class Month {
 
   protected int month, year;
-  private String monthString; //the month name represented by the month variable
+  private String monthString; // the month name represented by the month
+                              // variable
   private int[] days;
 
   /**
@@ -128,35 +129,35 @@ public class Month {
   }
 
   /**
-  * @return int - year of this month
-  */
+   * @return int - year of this month
+   */
   public int getYear() {
     return this.year;
   }
 
   /**
-  * @return String - the month this object represents
-  */
+   * @return String - the month this object represents
+   */
   public String getName() {
     return this.monthString;
   }
-  
+
   public int getMonthNum() {
-	  return month;
+    return month;
   }
-  
+
   public int[] getDays() {
     return this.days;
   }
 
   /**
-  * @return int - the total milk stored in this Month
-  */
+   * @return int - the total milk stored in this Month
+   */
   protected int totalMilk() {
     int totalMilk = 0;
 
-    for(int i = 0; i < days.length; i++) {
-        totalMilk += days[i];
+    for (int i = 0; i < days.length; i++) {
+      totalMilk += days[i];
     }
 
     return totalMilk;
