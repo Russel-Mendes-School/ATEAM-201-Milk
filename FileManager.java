@@ -21,38 +21,46 @@ public class FileManager {
   public static void main(String[] args) {
 
     FileManager.readFromFile("2019-1.csv");
-    System.out.println(Main.farmMap.size());
+//    System.out.println(Main.farmMap.size());
   }
 
   public static void readFromFile(String path) {
     String[] dateSplit;
     String date = null;
+    
     try {
       File file = new File(path);
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
+      
+      //for each row in the loaded csv, store the data into this array
       String[] tempArr;
-      // First line of each file is "date,farm_id,weight"
+      
+      // Skip first line of each file ("date,farm_id,weight")
       String line = br.readLine();
+      
       line = br.readLine();
       while (line != null) {
 
         tempArr = line.split(",");
-
+        
         date = tempArr[0];
         String farmID = tempArr[1];
         int milkWeight = Integer.parseInt(tempArr[2]);
-
+        
+        //Check if farm exists, if not add it 
         if (Main.farmMap.get(farmID) == null) {
           Main.farmMap.put(farmID, new Farm(farmID));
           Main.farmNames.add(farmID);
         }
-        dateSplit = date.split("/");
-        String year = dateSplit[2];
-        String month = dateSplit[0];
-        int day = Integer.parseInt(dateSplit[1]);
+        dateSplit = date.split("-");
+        
+        String year = dateSplit[0];
+        String month = dateSplit[1];
+        int day = Integer.parseInt(dateSplit[2]);
 
         Main.farmMap.get(farmID).updateMilkOnDate(milkWeight, month, year, day);
+        System.out.println(farmID+ " : " + Main.farmMap.get(farmID).getTotalMilk());
         line = br.readLine();
       }
       br.close();
@@ -63,8 +71,13 @@ public class FileManager {
     } catch (IOException e) {
       System.out.println("File not found");
     } catch (Exception e) {
-      System.out.println(date);
+        e.printStackTrace();
+//      System.out.println(tempArr.length);
     }
+    System.out.println(Main.farmMap.get("Farm 0").getTotalMilk());
+    System.out.println(Main.farmMap.get("Farm 1").getTotalMilk());
+    System.out.println(Main.farmMap.get("Farm 2").getTotalMilk());
+    
   }
 
   public static void readFromDir(String path) {
@@ -92,6 +105,7 @@ public class FileManager {
     for (Month m : allMonths) {
       String year = Integer.toString(m.year);
       String month = Integer.toString(m.month);
+      
       int[] days = m.getDays();
       for (int i = 0; i < days.length; i++) {
         dataString += year;
