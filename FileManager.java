@@ -37,7 +37,6 @@ public class FileManager {
       line = br.readLine();
       while (line != null) {
 
-        System.out.println(line);
         tempArr = line.split(",");
 
         date = tempArr[0];
@@ -46,6 +45,7 @@ public class FileManager {
 
         if (Main.farmMap.get(farmID) == null) {
           Main.farmMap.put(farmID, new Farm(farmID));
+          Main.farmNames.add(farmID);
         }
         dateSplit = date.split("/");
         String year = dateSplit[2];
