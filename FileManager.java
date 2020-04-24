@@ -47,7 +47,8 @@ public class FileManager {
         date = tempArr[0];
         String farmID = tempArr[1];
         int milkWeight = Integer.parseInt(tempArr[2]);
-
+        
+        //Check if farm exists, if not add it 
         if (Main.farmMap.get(farmID) == null) {
           Main.farmMap.put(farmID, new Farm(farmID));
           Main.farmNames.add(farmID);
@@ -56,11 +57,10 @@ public class FileManager {
         
         String year = dateSplit[0];
         String month = dateSplit[1];
-        int day = Integer.parseInt(dateSplit[1]);
+        int day = Integer.parseInt(dateSplit[2]);
 
-        
-//        System.out.println("farmId:" + farmID);
         Main.farmMap.get(farmID).updateMilkOnDate(milkWeight, month, year, day);
+        System.out.println(farmID+ " : " + Main.farmMap.get(farmID).getTotalMilk());
         line = br.readLine();
       }
       br.close();
@@ -74,6 +74,10 @@ public class FileManager {
         e.printStackTrace();
 //      System.out.println(tempArr.length);
     }
+    System.out.println(Main.farmMap.get("Farm 0").getTotalMilk());
+    System.out.println(Main.farmMap.get("Farm 1").getTotalMilk());
+    System.out.println(Main.farmMap.get("Farm 2").getTotalMilk());
+    
   }
 
   public static void readFromDir(String path) {
@@ -101,6 +105,7 @@ public class FileManager {
     for (Month m : allMonths) {
       String year = Integer.toString(m.year);
       String month = Integer.toString(m.month);
+      
       int[] days = m.getDays();
       for (int i = 0; i < days.length; i++) {
         dataString += year;

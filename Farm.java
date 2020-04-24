@@ -44,9 +44,9 @@ public class Farm {
     String yearMonthKey = year + month;
 
     // Make sure that a month exists, otherwise add it
-    if (this.farmData.get(yearMonthKey) == null) {
+    if (this.farmData.get(yearMonthKey) == null)
       this.farmData.put(yearMonthKey, new Month(month, year));
-    }
+    
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
   }
 

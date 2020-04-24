@@ -952,7 +952,7 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-      System.out.println(Main.farmMap.size());
+//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -1018,7 +1018,7 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-      System.out.println(Main.farmMap.size());
+//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -1078,7 +1078,7 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-      System.out.println(Main.farmMap.size());
+//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -1167,7 +1167,7 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.UTITextField.clear();
-      System.out.println(Main.farmMap.size());
+//      System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
