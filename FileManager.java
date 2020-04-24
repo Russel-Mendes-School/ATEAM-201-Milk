@@ -21,24 +21,29 @@ public class FileManager {
   public static void main(String[] args) {
 
     FileManager.readFromFile("2019-1.csv");
-    System.out.println(Main.farmMap.size());
+//    System.out.println(Main.farmMap.size());
   }
 
   public static void readFromFile(String path) {
     String[] dateSplit;
     String date = null;
+    
     try {
       File file = new File(path);
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
+      
+      //for each row in the loaded csv, store the data into this array
       String[] tempArr;
-      // First line of each file is "date,farm_id,weight"
+      
+      // Skip first line of each file ("date,farm_id,weight")
       String line = br.readLine();
+      
       line = br.readLine();
       while (line != null) {
 
         tempArr = line.split(",");
-
+        
         date = tempArr[0];
         String farmID = tempArr[1];
         int milkWeight = Integer.parseInt(tempArr[2]);
@@ -47,11 +52,14 @@ public class FileManager {
           Main.farmMap.put(farmID, new Farm(farmID));
           Main.farmNames.add(farmID);
         }
-        dateSplit = date.split("/");
-        String year = dateSplit[2];
-        String month = dateSplit[0];
+        dateSplit = date.split("-");
+        
+        String year = dateSplit[0];
+        String month = dateSplit[1];
         int day = Integer.parseInt(dateSplit[1]);
 
+        
+//        System.out.println("farmId:" + farmID);
         Main.farmMap.get(farmID).updateMilkOnDate(milkWeight, month, year, day);
         line = br.readLine();
       }
@@ -63,7 +71,8 @@ public class FileManager {
     } catch (IOException e) {
       System.out.println("File not found");
     } catch (Exception e) {
-      System.out.println(date);
+        e.printStackTrace();
+//      System.out.println(tempArr.length);
     }
   }
 
