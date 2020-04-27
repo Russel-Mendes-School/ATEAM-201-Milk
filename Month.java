@@ -129,6 +129,8 @@ public class Month {
   }
 
   /**
+   * Get the year of the month
+   * 
    * @return int - year of this month
    */
   public int getYear() {
@@ -136,16 +138,28 @@ public class Month {
   }
 
   /**
+   * Get the spoken name of the month
+   * 
    * @return String - the month this object represents
    */
   public String getName() {
     return this.monthString;
   }
 
+  /**
+   * Get the integer name of the month
+   * 
+   * @return int - month number
+   */
   public int getMonthNum() {
     return month;
   }
 
+  /**
+   * Return the current data array for the month
+   * 
+   * @return int[] - populated array with data
+   */
   public int[] getDays() {
     return this.days;
   }

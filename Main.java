@@ -109,6 +109,7 @@ public class Main extends Application {
     // Spacer
     spacerTop = new Label("        ");
     // Load Combo box
+    // The blank option allows the combobox have a "empty" screen
     String[] loadOptions = {"Load File", "Load Dir", ""};
     loadVBox = new VBox();
     loadLabel = new Label("Load Commands    ");
@@ -120,7 +121,8 @@ public class Main extends Application {
     loadVBox.getChildren().addAll(loadLabel, loadBox);
 
     // Edit Combo box
-    String[] editOptions = {"Edit File", "Edit Farm", "Delete Farm", ""};
+    String[] editOptions =
+        {"Edit File", "Edit Farm", "New Farm", "Delete Farm", ""};
     editVBox = new VBox();
     editLabel = new Label("Edit Commands    ");
     editLabel.setStyle("-fx-font-weight: bold");
@@ -131,8 +133,8 @@ public class Main extends Application {
     editVBox.getChildren().addAll(editLabel, editBox);
 
     // New Combo box
-    String[] newOptions = {"Export Farm", "Export Stats", "New Farm",
-        "Show Log", "Export Log", ""};
+    String[] newOptions =
+        {"Export Farm", "Export Stats", "Show Log", "Export Log", ""};
     newVBox = new VBox();
     newLabel = new Label("Export Commands   ");
     newLabel.setStyle("-fx-font-weight: bold");
@@ -144,7 +146,7 @@ public class Main extends Application {
 
     // Stats Combo box
     String[] statsOptions =
-        {"Max Stats", "Min Sales", "Avg Sales", "Dev. Sales", ""};
+        {"Max Sales", "Min Sales", "Avg Sales", "Dev. Sales", ""};
     statsVBox = new VBox();
     statsLabel = new Label("Stats Commands  ");
     statsLabel.setStyle("-fx-font-weight: bold");
@@ -261,25 +263,6 @@ public class Main extends Application {
 
   // HELPER FUNCTIONS
   /**
-   * add a new farm with a given ID
-   * 
-   * @param ID
-   */
-  protected void addFarm(String ID) {
-    Farm newFarm = new Farm(ID);
-    this.farmMap.put(ID, newFarm);
-  }
-
-  /**
-   * update a farm with a given ID
-   * 
-   * @param ID
-   */
-  protected void updateFarm(String ID) {
-
-  }
-
-  /**
    * executing the commands selected by the user
    */
   private void executeSelection() {
@@ -295,6 +278,7 @@ public class Main extends Application {
     this.actionLog.add("Entering Command: " + commandFlag + " Action Step: "
         + this.actionFlag);
 
+    // Depending on the command chosen by the user execute the command
     if (commandFlag.equals("Load File")) {
       this.loadDataFromCSV();
 
@@ -323,7 +307,7 @@ public class Main extends Application {
     } else if (commandFlag.equals("New Farm")) {
       this.newCustomFarm();
 
-    } else if (commandFlag.equals("Max Stats")) {
+    } else if (commandFlag.equals("Max Sales")) {
       this.showMaxSales();
 
     } else if (commandFlag.equals("Min Sales")) {
@@ -356,7 +340,7 @@ public class Main extends Application {
   /**
    * Display the command on the screen via a text field
    * 
-   * @param command
+   * @param command - command chosen by the user
    */
   private void showLoadSelection(String command) {
     this.msgTextField.clear();
@@ -765,6 +749,7 @@ public class Main extends Application {
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
+      // Get the total milk
       float totalMilkOfEveryFarmRange = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
@@ -803,6 +788,7 @@ public class Main extends Application {
 
       lines.add("Total: " + totalMilkOfEveryFarmRange);
 
+      // Compute the report
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
@@ -932,11 +918,11 @@ public class Main extends Application {
   }
 
   private void editFile() {
-
+    // TODO
   }
 
   private void editFarm() {
-
+    // TODO
   }
 
   private void newExportFarmToFile() {
@@ -990,13 +976,14 @@ public class Main extends Application {
    * Export the statistics of the data structure into a text file
    */
   private void newExportStats() {
+    // TODO
   }
 
   /**
    * Allows the user to create a custom from the GUI
    */
   private void newCustomFarm() {
-
+    // TODO
   }
 
   /**

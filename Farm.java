@@ -53,18 +53,17 @@ public class Farm {
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
   }
 
-  /**
-   * add a new month to the farmData
+  /*
+   * PREPARE TO DELETE /** add a new month to the farmData
    * 
    * @param month - integer
-   * @param year  - integer
+   * 
+   * @param year - integer
+   * 
+   * private void addNewMonth(String month, String year) { Month newMonth = new
+   * Month(month, year); String yearMonthKey = year + month;
+   * this.farmData.put(yearMonthKey, newMonth); }
    */
-  private void addNewMonth(String month, String year) {
-    Month newMonth = new Month(month, year);
-    String yearMonthKey = year + month;
-    this.farmData.put(yearMonthKey, newMonth);
-  }
-
   /**
    * Get the total milk contributed by a farm
    * 
