@@ -12,12 +12,14 @@ import java.util.Map.Entry;
  * @author Russel Mendes
  */
 public class Farm {
+
   private String ID;
 
   protected HashMap<String, Month> farmData;
-  protected ArrayList<String> keyList;
 
-  /** Creates a new Farm */
+  /**
+   * Creates a new Farm
+   */
   public Farm(String ID) {
     this.ID = ID;
     farmData = new HashMap<String, Month>();
@@ -47,6 +49,7 @@ public class Farm {
     if (this.farmData.get(yearMonthKey) == null)
       this.farmData.put(yearMonthKey, new Month(month, year));
 
+    // months have a days array which range from 0->month end-1
     this.farmData.get(yearMonthKey).setDayMilk(milkWeight, day - 1);
   }
 
@@ -59,7 +62,6 @@ public class Farm {
   private void addNewMonth(String month, String year) {
     Month newMonth = new Month(month, year);
     String yearMonthKey = year + month;
-    this.keyList.add(yearMonthKey);
     this.farmData.put(yearMonthKey, newMonth);
   }
 
@@ -70,6 +72,9 @@ public class Farm {
    */
   public int getTotalMilk() {
     int totalMilk = 0;
+
+    // HashMap iterator reduces time complexity to O(N)
+
     Iterator<Entry<String, Month>> farmDataIterator =
         farmData.entrySet().iterator();// iterator for Months HashMap
 
@@ -80,6 +85,12 @@ public class Farm {
     return totalMilk;
   }
 
+  /**
+   * Return a list of all the months for a given year
+   * 
+   * @param year - integer value of target year
+   * @return months - array list of all months in a given year
+   */
   public ArrayList<Month> getMonthsForYear(int year) {
     ArrayList<Month> months = new ArrayList<Month>();
 
@@ -98,7 +109,12 @@ public class Farm {
     return months;
   }
 
-  protected ArrayList<Month> getAllMonths() {
+  /**
+   * Return a list of all the months in the farm
+   * 
+   * @return array list of all the months
+   */
+  public ArrayList<Month> getAllMonths() {
     ArrayList<Month> months = new ArrayList<Month>();
     for (Month m : farmData.values()) {
       months.add(m);
@@ -108,6 +124,9 @@ public class Farm {
   }
 
 
+  /**
+   * to string method of farm class
+   */
   public String toString() {
     return ID + " has produced " + getTotalMilk()
         + " Gallons of Milk in total.";
