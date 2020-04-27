@@ -15,7 +15,7 @@ public class Farm {
 
   private String ID;
 
-  protected HashMap<String, Month> farmData;
+  private HashMap<String, Month> farmData;
 
   /**
    * Creates a new Farm

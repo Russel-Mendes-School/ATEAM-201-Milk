@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * This class handles reading data from files and also exporting to files. This
@@ -27,7 +28,8 @@ public class FileManager {
    * @param path - path to the file
    * @return message - possible string reporting anything abnormalities
    */
-  public static String readFromFile(String path) {
+  public static String readFromFile(String path, HashMap<String, Farm> farmMap,
+      ArrayList<String> farmNames) {
     String[] dateSplit;
     String date = null;
     String message = null;
@@ -61,9 +63,9 @@ public class FileManager {
             int milkWeight = Integer.parseInt(tempArr[2]);
 
             // Check if farm exists, if not add it
-            if (Main.farmMap.get(farmID) == null) {
-              Main.farmMap.put(farmID, new Farm(farmID));
-              Main.farmNames.add(farmID);
+            if (farmMap.get(farmID) == null) {
+              farmMap.put(farmID, new Farm(farmID));
+              farmNames.add(farmID);
             }
             dateSplit = date.split("-");
 
@@ -71,7 +73,7 @@ public class FileManager {
               String year = dateSplit[0];
               String month = dateSplit[1];
               int day = Integer.parseInt(dateSplit[2]);
-              Main.farmMap.get(farmID).updateMilkOnDate(milkWeight, month, year,
+              farmMap.get(farmID).updateMilkOnDate(milkWeight, month, year,
                   day);
             } else// Track Errors in date format
             {
@@ -116,14 +118,16 @@ public class FileManager {
    * @param path - path to directory
    * @return message - possible string message that reports abnormalities
    */
-  public static String readFromDir(String path) {
-    
+  public static String readFromDir(String path, HashMap<String, Farm> farmMap,
+      ArrayList<String> farmNames) {
+
     File[] files = new File(path).listFiles();
     String message = null;
     String response = "";
-    
+
     for (File file : files) {
-      response = FileManager.readFromFile(file.getAbsolutePath());
+      response =
+          FileManager.readFromFile(file.getAbsolutePath(), farmMap, farmNames);
       if (response != null) {
         message += "Error Occured in File: " + file.getAbsolutePath() + " : "
             + response + "\n";
@@ -134,11 +138,23 @@ public class FileManager {
   }
 
   /**
+   * The following information could be sent to a file
    * 
    * @param farmID
+   * @throws UnsupportedEncodingException
+   * @throws FileNotFoundException
    */
-  public static void write(String path, String message) {
-//TODO
+  public static void writeStatsToFile(String command, String path,
+      String farmID, HashMap<String, Farm> farmMap)
+      throws FileNotFoundException, UnsupportedEncodingException {
+    PrintWriter writer = new PrintWriter(path, "UTF-8");
+    // TODO
+    if (command.equals("Max Sales")) {
+
+    }
+
+
+
   }
 
   /**
@@ -148,11 +164,12 @@ public class FileManager {
    * @throws FileNotFoundException
    * @throws UnsupportedEncodingException
    */
-  public static void exportFarmToFile(String path, String farmID)
+  public static void exportFarmToFile(String path, String farmID,
+      HashMap<String, Farm> farmMap)
       throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(path, "UTF-8");
     writer.println("Date,FarmID,Weight");
-    Farm targetFarm = Main.farmMap.get(farmID);
+    Farm targetFarm = farmMap.get(farmID);
 
     ArrayList<Month> allMonths = targetFarm.getAllMonths();
     String dataString = "";
@@ -176,6 +193,24 @@ public class FileManager {
         dataString = "";
       }
     }
+    writer.close();
+  }
+
+  /**
+   * 
+   * @param path
+   * @param farmID
+   * @throws FileNotFoundException
+   * @throws UnsupportedEncodingException
+   */
+  public static void exportLogsToFile(String path, ArrayList<String> logs)
+      throws FileNotFoundException, UnsupportedEncodingException {
+    PrintWriter writer = new PrintWriter(path, "UTF-8");
+
+    for (String line : logs) {
+      writer.println(line);
+    }
+
     writer.close();
   }
 

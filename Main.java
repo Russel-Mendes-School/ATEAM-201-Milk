@@ -36,8 +36,10 @@ public class Main extends Application {
   private static final String APP_TITLE = "ATEAM 201 Milk Weights GUI";
 
   // Data Field --> FarmID, Farm
-  protected static HashMap<String, Farm> farmMap = new HashMap<String, Farm>();
-  protected static ArrayList<String> farmNames = new ArrayList<String>();
+  private HashMap<String, Farm> farmMap = new HashMap<String, Farm>();
+  private ArrayList<String> farmNames = new ArrayList<String>();
+  // Keeps track of actions done by user
+  private ArrayList<String> actionLog = new ArrayList<String>();
 
   private String commandFlag;
   private int actionFlag;
@@ -129,7 +131,8 @@ public class Main extends Application {
     editVBox.getChildren().addAll(editLabel, editBox);
 
     // New Combo box
-    String[] newOptions = {"Export Farm", "Export Stats", "New Farm", ""};
+    String[] newOptions = {"Export Farm", "Export Stats", "New Farm",
+        "Show Log", "Export Log", ""};
     newVBox = new VBox();
     newLabel = new Label("Export Commands   ");
     newLabel.setStyle("-fx-font-weight: bold");
@@ -230,6 +233,7 @@ public class Main extends Application {
       this.msgTextField.clear();
       this.UTITextField.clear();
       this.borderPaneRoot.setBottom(null);
+      this.actionLog.add("User has selected Purge");
     });
     // Exit button
     exitLabel = new Label("EXIT PROGRAM");
@@ -251,6 +255,7 @@ public class Main extends Application {
     // Bottom Panel
     // Going to be a VBOX of info. This will be populated by functions
 
+    this.actionLog.add("Start Up Complete");
     primaryStage.show();
   }
 
@@ -284,7 +289,11 @@ public class Main extends Application {
       String command = this.msgTextField.getText();
       String[] commandSplit = command.split(": ");
       commandFlag = commandSplit[1];
+      this.actionLog.add("Excution Parsed Command: " + commandFlag);
     }
+
+    this.actionLog.add("Entering Command: " + commandFlag + " Action Step: "
+        + this.actionFlag);
 
     if (commandFlag.equals("Load File")) {
       this.loadDataFromCSV();
@@ -307,6 +316,10 @@ public class Main extends Application {
     } else if (commandFlag.equals("Export Stats")) {
       this.newExportStats();
 
+    } else if (commandFlag.equals("Show Log")) {
+      this.showLogs();
+    } else if (commandFlag.equals("Export Log")) {
+      this.exportLogsToFile();
     } else if (commandFlag.equals("New Farm")) {
       this.newCustomFarm();
 
@@ -351,6 +364,8 @@ public class Main extends Application {
     message += command;
     this.msgTextField.setText(message);
 
+    // Keep Track of Commands
+    this.actionLog.add("User Selected The Following Command: " + command);
   }
 
   /**
@@ -366,6 +381,7 @@ public class Main extends Application {
     this.asgBox.getSelectionModel().clearSelection();
 
     // Send off the appropriate command
+    this.actionLog.add("User has entered the Load Selection Box");
     showLoadSelection(command);
   }
 
@@ -382,6 +398,7 @@ public class Main extends Application {
     this.asgBox.getSelectionModel().clearSelection();
 
     // Send off the appropriate command
+    this.actionLog.add("User has entered the Edit Selection Box");
     showLoadSelection(command);
   }
 
@@ -398,6 +415,7 @@ public class Main extends Application {
     this.asgBox.getSelectionModel().clearSelection();
 
     // Send off the appropriate command
+    this.actionLog.add("User has entered the New Selection Box");
     showLoadSelection(command);
   }
 
@@ -414,6 +432,7 @@ public class Main extends Application {
     this.asgBox.getSelectionModel().clearSelection();
 
     // Send off the appropriate command
+    this.actionLog.add("User has entered the Stats Selection Box");
     showLoadSelection(command);
   }
 
@@ -430,6 +449,7 @@ public class Main extends Application {
     this.loadBox.getSelectionModel().clearSelection();
 
     // Send off the appropriate command
+    this.actionLog.add("User has entered the Asignment Selection Box");
     showLoadSelection(command);
   }
 
@@ -449,9 +469,11 @@ public class Main extends Application {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionFlag++;
+      this.actionLog.add("Program Prompted: Farm ID,Year");
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
 
       String[] args = this.UTITextField.getText().split(",");
       targetFarm = args[0];
@@ -460,12 +482,13 @@ public class Main extends Application {
 
       if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
+        this.actionLog.add("User chosen Target Does not Exist: " + targetFarm);
         return;
       }
 
       ArrayList<String> lines = new ArrayList<String>();
 
-      //Get the list of months and sort them
+      // Get the list of months and sort them
       List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
       Collections.sort(months, new Comparator<Month>() {
 
@@ -479,9 +502,9 @@ public class Main extends Application {
       for (Month m : months) {
         totalMilkOfYear += m.totalMilk();
       }
-      
+
       lines.add("FarmID: " + targetFarm + " Year " + targetYear);
-      
+
       // Get the percentage of milk per month
       for (Month m : months) {
         float milk = m.totalMilk();
@@ -490,7 +513,7 @@ public class Main extends Application {
       }
       lines.add("Total: " + totalMilkOfYear);
 
-      //Transform lines into GUI output
+      // Transform lines into GUI output
       VBox masterVbox = new VBox();
       for (int i = 0; i < lines.size(); i++) {
         Label tmpLabel = new Label();
@@ -505,6 +528,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Farm Report Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -518,16 +542,19 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Purge Farm ID: ");
+      this.actionLog.add("Program Prompts Purge ID");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
 
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String deleteID = this.UTITextField.getText();
       farmMap.remove(deleteID);
 
       this.msgTextField.clear();
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Farm Delete Completed Successfully");
       actionFlag = 0;
       return;
     }
@@ -544,11 +571,13 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Year: ");
+      this.actionLog.add("Program Prompts For Year");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
 
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String args = this.UTITextField.getText();
       targetYear = Integer.parseInt(args);
       this.msgTextField.clear();
@@ -559,7 +588,7 @@ public class Main extends Application {
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
-      //Get the total milk of all the farms
+      // Get the total milk of all the farms
       float totalMilkOfEveryFarm = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
@@ -590,7 +619,7 @@ public class Main extends Application {
             targetFarm + ": " + totalMilkOfFarmInYear + " (" + percent + "%)");
       }
 
-      //Transform lines into GUI output
+      // Transform lines into GUI output
       VBox masterVbox = new VBox();
       for (int i = 0; i < lines.size(); i++) {
         Label tmpLabel = new Label();
@@ -605,6 +634,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Annual Report Task Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -624,10 +654,12 @@ public class Main extends Application {
       this.msgTextField.clear();
       this.msgTextField.setText("Numerically: Year,Month: ");
       this.actionFlag++;
+      this.actionLog.add("Program Prompted Year,Month");
       return;
     }
     if (actionFlag == 1) {
 
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       targetYear = Integer.parseInt(args[0]);
       targetMonth = Integer.parseInt(args[1]);
@@ -685,6 +717,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Monthly Report Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -709,10 +742,12 @@ public class Main extends Application {
       this.msgTextField
           .setText("Numerically Start:End-> Year,Month,Day:Month,Day");
       this.actionFlag++;
+      this.actionLog.add("Program Prompted Year,Month,Day:Month,Day");
       return;
     }
     if (actionFlag == 1) {
 
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(":");
       targetYear = Integer.parseInt(args[0].split(",")[0]);
       startMonth = Integer.parseInt(args[0].split(",")[1]);
@@ -819,6 +854,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(sp);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Range Report Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -834,17 +870,23 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Enter File Path: ");
+      this.actionLog.add("Program Prompted for File Path");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String path = this.UTITextField.getText();
-      String response = FileManager.readFromFile(path);
+      String response =
+          FileManager.readFromFile(path, this.farmMap, this.farmNames);
 
       this.msgTextField.clear();
       if (response == null) {
         this.msgTextField.setText("Task Completed Succesfully");
+        this.actionLog.add("Reading from CSV Completed Successfully");
       } else {
+        this.actionLog.add("Errors Occured: " + response);
         this.msgTextField.setText("File Loaded: " + response);
       }
       this.UTITextField.clear();
@@ -861,17 +903,23 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("File Folder Path: ");
+      this.actionLog.add("Program Prompts File Folder Path");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String path = this.UTITextField.getText();
-      String response = FileManager.readFromDir(path);
+      String response =
+          FileManager.readFromDir(path, this.farmMap, this.farmNames);
       this.msgTextField.clear();
 
       if (response == null) {
         this.msgTextField.setText("Task Completed Succesfully");
+        this.actionLog.add("Reading from Dir Completed Successfully");
       } else {
+        this.actionLog.add("Errors Occured: " + response);
         this.msgTextField.setText(response);
         System.out.println(response);
       }
@@ -895,36 +943,43 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Please Give Target Farm: ");
+      this.actionLog.add("Program Prompts Target Farm");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String farmID = this.UTITextField.getText();
 
       // Check if input is valid
       if (farmID == null || !farmMap.containsKey(farmID)) {
         this.msgTextField.clear();
         this.msgTextField.setText("Please give a real ID");
+        this.actionLog.add("User Gave invalid Farm ID");
         return;
       }
       this.exportFarmID = farmID;
 
       this.msgTextField.clear();
+      this.actionLog.add("Program Prompts File Export Path");
       this.msgTextField.setText("Please give export file path:");
       actionFlag++;
       return;
     }
     if (actionFlag == 2) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String filePath = this.UTITextField.getText();
       try {
-        FileManager.exportFarmToFile(filePath, this.exportFarmID);
+        FileManager.exportFarmToFile(filePath, this.exportFarmID, farmMap);
         this.msgTextField.clear();
+        this.actionLog.add("Exporting Farm Task Completed Successfully");
         this.msgTextField.setText("Task Completed Succesfully:");
         actionFlag = 0;
         return;
       } catch (Exception e) {
         this.msgTextField.clear();
         this.msgTextField.setText("Task Failed: " + e.getMessage());
+        this.actionLog.add("Task Failed: " + e.getMessage());
         actionFlag = 0;
         return;
       }
@@ -935,7 +990,6 @@ public class Main extends Application {
    * Export the statistics of the data structure into a text file
    */
   private void newExportStats() {
-
   }
 
   /**
@@ -953,10 +1007,12 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
+      this.actionLog.add("System Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
       int targetYear = Integer.parseInt(args[1]);
@@ -964,6 +1020,7 @@ public class Main extends Application {
 
       if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
+        this.actionLog.add("User Farm Does Not Exist");
         return;
       }
 
@@ -999,6 +1056,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Max Sales Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -1012,10 +1070,12 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
+      this.actionLog.add("System Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
       int targetYear = Integer.parseInt(args[1]);
@@ -1023,6 +1083,7 @@ public class Main extends Application {
 
       if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
+        this.actionLog.add("User Farm Does Not Exist");
         return;
       }
 
@@ -1057,8 +1118,8 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Min Sales Task Completed Successfully");
       this.UTITextField.clear();
-      // System.out.println(Main.farmMap.size());
       actionFlag = 0;
       return;
     }
@@ -1071,10 +1132,12 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
+      this.actionLog.add("System Prompted: Farm ID,Year");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
       int targetYear = Integer.parseInt(args[1]);
@@ -1082,6 +1145,7 @@ public class Main extends Application {
 
       if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
+        this.actionLog.add("User Farm Does Not Exist");
         return;
       }
 
@@ -1115,6 +1179,7 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Average Task Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
@@ -1128,10 +1193,12 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
+      this.actionLog.add("System Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
     if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
       int targetYear = Integer.parseInt(args[1]);
@@ -1139,6 +1206,7 @@ public class Main extends Application {
 
       if (!farmMap.containsKey(targetFarm)) {
         this.msgTextField.setText("Farm Does Not Exist");
+        this.actionLog.add("User Farm Does Not Exist");
         return;
       }
 
@@ -1201,10 +1269,68 @@ public class Main extends Application {
 
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
+      this.actionLog.add("Standard Deviation Task Completed Successfully");
       this.UTITextField.clear();
       actionFlag = 0;
       return;
     }
+  }
+
+  /**
+   * Show the logs of the entire program so far
+   */
+  private void showLogs() {
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.actionFlag = 0;
+
+      VBox masterVbox = new VBox();
+      for (int i = 0; i < this.actionLog.size(); i++) {
+        Label tmpLabel = new Label();
+        tmpLabel.setText(this.actionLog.get(i));
+        masterVbox.getChildren().add(tmpLabel);
+      }
+
+      ScrollPane sp = new ScrollPane();
+      sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      sp.prefHeightProperty().set(300);
+      sp.setContent(masterVbox);
+      this.borderPaneRoot.setBottom(sp);
+      return;
+    }
+
+  }
+
+  /**
+   * Export the logs to a file defined by the user
+   */
+  private void exportLogsToFile() {
+    if (actionFlag == 0) {
+      this.msgTextField.clear();
+      this.msgTextField.setText("Please Give Path: ");
+      this.actionLog.add("Program Prompts: Path");
+      this.actionFlag++;
+      return;
+    }
+    if (actionFlag == 1) {
+      this.actionLog.add("User Args: " + this.UTITextField.getText());
+      String filePath = this.UTITextField.getText();
+      try {
+        FileManager.exportLogsToFile(filePath, this.actionLog);
+        this.msgTextField.clear();
+        this.actionLog.add("Exporting Farm Task Completed Successfully");
+        this.msgTextField.setText("Task Completed Succesfully:");
+        actionFlag = 0;
+        return;
+      } catch (Exception e) {
+        this.msgTextField.clear();
+        this.msgTextField.setText("Task Failed: " + e.getMessage());
+        this.actionLog.add("Task Failed: " + e.getMessage());
+        actionFlag = 0;
+        return;
+      }
+    }
+
   }
 
   /**
