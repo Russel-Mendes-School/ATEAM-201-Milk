@@ -638,7 +638,7 @@ public class Main extends Application {
       this.msgTextField.clear();
       this.msgTextField.setText("Numerically: Year,Month: ");
       this.actionFlag++;
-      this.actionLog.add("Program Prompted Year,Month");
+      this.actionLog.add("Program Prompts: Year,Month");
       return;
     }
     if (actionFlag == 1) {
@@ -994,7 +994,7 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
-      this.actionLog.add("System Prompts: Farm ID,Year");
+      this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
@@ -1057,7 +1057,7 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
-      this.actionLog.add("System Prompts: Farm ID,Year");
+      this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
@@ -1180,7 +1180,7 @@ public class Main extends Application {
     if (actionFlag == 0) {
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
-      this.actionLog.add("System Prompts: Farm ID,Year");
+      this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }

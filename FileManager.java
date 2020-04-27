@@ -35,8 +35,6 @@ public class FileManager {
     String message = null;
 
     int dataFormatErrors = 0;
-    // int dataRead = 0;
-    System.out.println("Errors detected in " + path + ":");
     try {
       File file = new File(path);
       FileReader fr = new FileReader(file);
@@ -77,13 +75,11 @@ public class FileManager {
                   day);
             } else// Track Errors in date format
             {
-              System.out.println(Arrays.toString(tempArr));
               dataFormatErrors++;
             }
           } catch (NumberFormatException e)// catch errors in integer formatting
                                            // (numerical date/milk weight)
           {
-            System.out.println(Arrays.toString(tempArr));
             dataFormatErrors++;
           }
         } else {
@@ -100,7 +96,6 @@ public class FileManager {
     } catch (IOException e) {
       return ("File " + path + " Not Found.");
     } catch (Exception e) {
-      e.printStackTrace();
       return ("Unknown Error Detected");
     }
 
@@ -133,7 +128,6 @@ public class FileManager {
             + response + "\n";
       }
     }
-    System.out.println();
     return message;
   }
 
