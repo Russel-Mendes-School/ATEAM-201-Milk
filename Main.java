@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -33,7 +35,7 @@ public class Main extends Application {
   // Final Fields
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 600;
-  private static final String APP_TITLE = "ATEAM 7 Milk Weights GUI";
+  private static final String APP_TITLE = "ATEAM 201 Milk Weights GUI";
 
   // Data Field --> FarmID, Farm
   private HashMap<String, Farm> farmMap = new HashMap<String, Farm>();
@@ -95,6 +97,8 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
 
     borderPaneRoot = new BorderPane();
+    borderPaneRoot.setStyle("-fx-background-color: #EDDBB7");
+    
     Scene mainScene = new Scene(borderPaneRoot, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Add the stuff and set the primary stage
@@ -104,20 +108,24 @@ public class Main extends Application {
     // TOP PANEL
     // Create Title
     title = new Label("Milk Weights Dashboard");
-    title.setStyle("-fx-font-weight: bold");
-    title.setFont(new Font("Arial", 30));
+    title.setFont(new Font("Montserrat", 35));
+    title.setTextFill(Color.web("#268AE3"));
     // Spacer
     spacerTop = new Label("        ");
+    
     // Load Combo box
     // The blank option allows the combobox have a "empty" screen
     String[] loadOptions = {"Load File", "Load Dir", ""};
     loadVBox = new VBox();
     loadLabel = new Label("Load Commands    ");
     loadLabel.setStyle("-fx-font-weight: bold");
-    loadLabel.setFont(new Font("Arial", 16));
+    loadLabel.setFont(new Font("Montserrat", 16));
+    loadLabel.setTextFill(Color.web("#BF3604"));
+    loadLabel.setTextFill(Color.web("#BF3604"));
     loadBox =
         new ComboBox<String>(FXCollections.observableArrayList(loadOptions));
     loadBox.setOnAction(e -> handleLoadSelection());
+    loadBox.setMaxWidth(115);
     loadVBox.getChildren().addAll(loadLabel, loadBox);
 
     // Edit Combo box
@@ -126,7 +134,8 @@ public class Main extends Application {
     editVBox = new VBox();
     editLabel = new Label("Edit Commands    ");
     editLabel.setStyle("-fx-font-weight: bold");
-    editLabel.setFont(new Font("Arial", 16));
+    editLabel.setFont(new Font("Montserrat", 16));
+    editLabel.setTextFill(Color.web("#BF3604"));
     editBox =
         new ComboBox<String>(FXCollections.observableArrayList(editOptions));
     editBox.setOnAction(e -> handleEditSelection());
@@ -138,10 +147,12 @@ public class Main extends Application {
     newVBox = new VBox();
     newLabel = new Label("Export Commands   ");
     newLabel.setStyle("-fx-font-weight: bold");
-    newLabel.setFont(new Font("Arial", 16));
+    newLabel.setFont(new Font("Montserrat", 16));
+    newLabel.setTextFill(Color.web("#BF3604"));
     newBox =
         new ComboBox<String>(FXCollections.observableArrayList(newOptions));
     newBox.setOnAction(e -> handleNewSelection());
+    newBox.setMaxWidth(127);
     newVBox.getChildren().addAll(newLabel, newBox);
 
     // Stats Combo box
@@ -150,10 +161,12 @@ public class Main extends Application {
     statsVBox = new VBox();
     statsLabel = new Label("Stats Commands  ");
     statsLabel.setStyle("-fx-font-weight: bold");
-    statsLabel.setFont(new Font("Arial", 16));
+    statsLabel.setFont(new Font("Montserrat", 16));
+    statsLabel.setTextFill(Color.web("#BF3604"));
     statsBox =
         new ComboBox<String>(FXCollections.observableArrayList(statsOptions));
     statsBox.setOnAction(e -> handleStatSelection());
+    statsBox.setMaxWidth(118);
     statsVBox.getChildren().addAll(statsLabel, statsBox);
 
     // Assignment Combo box
@@ -162,7 +175,8 @@ public class Main extends Application {
     asgVBox = new VBox();
     asgLabel = new Label("Asg Commands ");
     asgLabel.setStyle("-fx-font-weight: bold");
-    asgLabel.setFont(new Font("Arial", 16));
+    asgLabel.setFont(new Font("Montserrat", 16));
+    asgLabel.setTextFill(Color.web("#BF3604"));
     asgBox = new ComboBox<String>(
         FXCollections.observableArrayList(AssignmentOptions));
     asgBox.setOnAction(e -> handleAsgSelection());
@@ -172,13 +186,14 @@ public class Main extends Application {
     topHBox = new HBox();
     topHBox.getChildren().addAll(title, spacerTop, loadVBox, editVBox, newVBox,
         statsVBox, asgVBox);
+    topHBox.setSpacing(20);
     borderPaneRoot.setTop(topHBox);
 
     // LEFT PANEL
     // Message Box Label
     msgBoxLabel = new Label("Message Output");
-    msgBoxLabel.setStyle("-fx-font-weight: bold");
-    msgBoxLabel.setFont(new Font("Arial", 18));
+    msgBoxLabel.setFont(new Font("Montserrat", 18));
+    msgBoxLabel.setTextFill(Color.web("#268AE3"));
     // Text Field
     msgTextField = new TextField();
     msgTextField.setPrefWidth(400);
@@ -195,8 +210,8 @@ public class Main extends Application {
     // CENTER PANEL
     // User Text Interface Label
     UTILabel = new Label("User Text Interface");
-    UTILabel.setStyle("-fx-font-weight: bold");
-    UTILabel.setFont(new Font("Arial", 18));
+    UTILabel.setFont(new Font("Montserrat", 18));
+    UTILabel.setTextFill(Color.web("#268AE3"));
     // Text Field
     UTITextField = new TextField();
     UTITextField.setPrefWidth(100);
@@ -212,21 +227,35 @@ public class Main extends Application {
     borderPaneRoot.setCenter(centerVBox);
 
     // RIGHT PANEL
-    // Execute Label
-    executeLabel = new Label("EXECUTE");
-    executeLabel.setStyle("-fx-font-weight: bold");
-    executeLabel.setFont(new Font("Arial", 24));
+
     // Text Field
     execButton = new Button();
+    execButton.setText("EXECUTE");
+    execButton.setStyle("-fx-font-weight: bolder");
+    execButton.setFont(new Font("Montserrat", 24));
+    execButton.setStyle("-fx-font-size: 24");
+    execButton.setTextFill(Color.web("#A8131E"));
     // Format Works
     // Lambda Functions
     execButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
-        e -> executeSelection());
-    purgeLabel = new Label("PURGE COMMAND");
-    purgeLabel.setStyle("-fx-font-weight: bold");
-    purgeLabel.setFont(new Font("Arial", 24));
+            e -> {
+                try {
+                    executeSelection();
+                }
+                catch(ArrayIndexOutOfBoundsException x) {
+                    this.msgTextField.setText("Please enter a command before executing");
+                }
+            });
+
     // Text Field
     purgeButton = new Button();
+    purgeButton.setText("CLEAR CONSOLE");
+    purgeButton.setStyle("-fx-font-weight: bolder");
+    purgeButton.setFont(new Font("Montserrat", 24));
+    purgeButton.setStyle("-fx-font-size: 24");
+    purgeButton.setTextFill(Color.web("#A8131E"));
+    
+    
     // Format Works
     // Lambda Functions
     purgeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -237,11 +266,15 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(null);
       this.actionLog.add("User has selected Purge");
     });
-    // Exit button
-    exitLabel = new Label("EXIT PROGRAM");
-    exitLabel.setStyle("-fx-font-weight: bold");
-    exitLabel.setFont(new Font("Arial", 24));
+
+    //Exit button - quits program when pressed
     exitButton = new Button();
+    exitButton.setText("EXIT PROGRAM");
+    exitButton.setStyle("-fx-font-weight: bolder");
+    exitButton.setFont(new Font("Montserrat", 24));
+    exitButton.setStyle("-fx-font-size: 24");
+    exitButton.setTextFill(Color.web("#A8131E"));
+    
     exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
         e -> ((Stage) exitButton.getScene().getWindow()).close());
 
@@ -249,8 +282,9 @@ public class Main extends Application {
     spacerRight = new Label("        ");
     // Packing
     rightVBox = new VBox();
-    rightVBox.getChildren().addAll(spacerRight, executeLabel, execButton,
-        purgeLabel, purgeButton, exitLabel, exitButton);
+    rightVBox.getChildren().addAll(spacerRight, execButton,
+        purgeButton, exitButton);
+    rightVBox.setSpacing(5);
     rightVBox.setAlignment(Pos.TOP_CENTER);
     borderPaneRoot.setRight(rightVBox);
 
@@ -339,7 +373,7 @@ public class Main extends Application {
 
   /**
    * Display the command on the screen via a text field
-   *
+   * 
    * @param command - command chosen by the user
    */
   private void showLoadSelection(String command) {
@@ -977,129 +1011,133 @@ public class Main extends Application {
    */
   private void newExportStats() {
     String targetFarm = "";
-	  int targetYear = 0;
-	  if (actionFlag == 0) {
-	      this.msgTextField.clear();
-	      this.msgTextField.setText("Farm ID,Year: ");
-	      this.actionLog.add("Program Prompts: Farm ID,Year");
-	      this.actionFlag++;
-	      return;
-	    }
-	  if (actionFlag == 1) {
-	      this.actionLog.add("User Args: " + this.UTITextField.getText());
-	      String[] args = this.UTITextField.getText().split(",");
-	      targetFarm = args[0];
-	      targetYear = Integer.parseInt(args[1]);
-	      this.msgTextField.clear();
+      int targetYear = 0;
+      if (actionFlag == 0) {
+          this.msgTextField.clear();
+          this.msgTextField.setText("Farm ID,Year: ");
+          this.actionLog.add("Program Prompts: Farm ID,Year");
+          this.actionFlag++;
+          return;
+        }
+      if (actionFlag == 1) {
+          this.actionLog.add("User Args: " + this.UTITextField.getText());
+          String[] args = this.UTITextField.getText().split(",");
+          targetFarm = args[0];
+          targetYear = Integer.parseInt(args[1]);
+          this.msgTextField.clear();
 
-	      if (!farmMap.containsKey(targetFarm)) {
-	        this.msgTextField.setText("Farm Does Not Exist");
-	        this.actionLog.add("User Farm Does Not Exist");
-	        return;
-	      }
-	      this.msgTextField.clear();
-	      this.actionLog.add("Program Prompts File Export Path");
-	      this.msgTextField.setText("Please give export file path:");
-	      actionFlag++;
-	      return;
-	    }
-	    if (actionFlag == 2) {
-	      this.actionLog.add("User Args: " + this.UTITextField.getText());
-	      //calculate all the stats
-	      List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
-	      List<String> month = new ArrayList<String>();
-	      List<Integer> max = new ArrayList<Integer>();
-	      List<Integer> min = new ArrayList<Integer>();
-	      List<Float> devi = new ArrayList<Float>();
-	      List<Float> avg = new ArrayList<Float>();
+          if (!farmMap.containsKey(targetFarm)) {
+            this.msgTextField.setText("Farm Does Not Exist");
+            this.actionLog.add("User Farm Does Not Exist");
+            return;
+          }
+          this.msgTextField.clear();
+          this.actionLog.add("Program Prompts File Export Path");
+          this.msgTextField.setText("Please give export file path:");
+          actionFlag++;
+          return;
+        }
+        if (actionFlag == 2) {
+          this.actionLog.add("User Args: " + this.UTITextField.getText());
+          //calculate all the stats
+          List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
+          List<String> month = new ArrayList<String>();
+          List<Integer> max = new ArrayList<Integer>();
+          List<Integer> min = new ArrayList<Integer>();
+          List<Float> devi = new ArrayList<Float>();
+          List<Float> avg = new ArrayList<Float>();
 
-	      for (Month m : months) {
-	    	  month.add(m.getName());
-	          int[] days = m.getDays();
-	          int minMilk = days[0];
-	          int maxMilk = 0;
-	          int runningTotal = 0;
-	          //calculate minsales
-	          for (int i = 0; i < days.length; i++) {
-	            if (days[i] < minMilk) {
-	              minMilk = days[i];
-	            }
-	          }
-	          min.add(minMilk);
-	          //calculate maxsales
-	          for (int i = 0; i < days.length; i++) {
-	              if (days[i] > maxMilk) {
-	                maxMilk = days[i];
-	              }
-	            }
-	          max.add(maxMilk);
-	          //calculate averagesales
-	          for (int i = 0; i < days.length; i++) {
-	              runningTotal += days[i];
-	            }
-	          float avgMilk = runningTotal / days.length;
-	          avg.add(avgMilk);
-	      }
-	      //calculate the deviation in sales
-	      float monthlyDev = 0;
-	      float monthlyRunningTotal = 0;
-	      float monthlyAvg = 0;
-	      //Dev = sqrt((sum of mean - xi)^2/N)
-	      for (Month m : months) {
-	        int[] days = m.getDays();
-	        float runningTotal = 0;
-	        for (int i = 0; i < days.length; i++) {
-	          runningTotal += days[i];
-	        }
+          for (Month m : months) {
+              month.add(m.getName());
+              int[] days = m.getDays();
+              int minMilk = days[0];
+              int maxMilk = 0;
+              int runningTotal = 0;
+              //calculate minsales
+              for (int i = 0; i < days.length; i++) {
+                if (days[i] < minMilk) {
+                  minMilk = days[i];
+                }
+              }
+              min.add(minMilk);
+              //calculate maxsales
+              for (int i = 0; i < days.length; i++) {
+                  if (days[i] > maxMilk) {
+                    maxMilk = days[i];
+                  }
+                }
+              max.add(maxMilk);
+              //calculate averagesales
+              for (int i = 0; i < days.length; i++) {
+                  runningTotal += days[i];
+                }
+              float avgMilk = runningTotal / days.length;
+              avg.add(avgMilk);
+          }
+          //calculate the deviation in sales
+          float monthlyDev = 0;
+          float monthlyRunningTotal = 0;
+          float monthlyAvg = 0;
+          //Dev = sqrt((sum of mean - xi)^2/N)
+          for (Month m : months) {
+            int[] days = m.getDays();
+            float runningTotal = 0;
+            for (int i = 0; i < days.length; i++) {
+              runningTotal += days[i];
+            }
 
-	        monthlyRunningTotal += runningTotal; // deviation for months
+            monthlyRunningTotal += runningTotal; // deviation for months
 
-	        float avgMilk = runningTotal / days.length;
+            float avgMilk = runningTotal / days.length;
 
-	        runningTotal = 0;
-	        for (int i = 0; i < days.length; i++) {
-	          runningTotal += (avgMilk - days[i]) * (avgMilk - days[i]);
-	        }
-	        runningTotal /= days.length;
-	        float dev = (float) Math.pow(runningTotal, .5);
-	        devi.add(dev);
-	      }
-	      monthlyAvg = monthlyRunningTotal / months.size();
-	      for (Month m : months) {
-	        int[] days = m.getDays();
-	        float totalMilk = 0;
-	        for (int i = 0; i < days.length; i++) {
-	          totalMilk += days[i];
-	        }
-	        monthlyDev += (monthlyAvg - totalMilk) * (monthlyAvg - totalMilk);
-	      }
-	      monthlyDev /= months.size();
-	      monthlyDev = (float) Math.pow(monthlyDev, .5);
+            runningTotal = 0;
+            for (int i = 0; i < days.length; i++) {
+              runningTotal += (avgMilk - days[i]) * (avgMilk - days[i]);
+            }
+            runningTotal /= days.length;
+            float dev = (float) Math.pow(runningTotal, .5);
+            devi.add(dev);
+          }
+          monthlyAvg = monthlyRunningTotal / months.size();
+          for (Month m : months) {
+            int[] days = m.getDays();
+            float totalMilk = 0;
+            for (int i = 0; i < days.length; i++) {
+              totalMilk += days[i];
+            }
+            monthlyDev += (monthlyAvg - totalMilk) * (monthlyAvg - totalMilk);
+          }
+          monthlyDev /= months.size();
+          monthlyDev = (float) Math.pow(monthlyDev, .5);
 
 
-	      String filePath = this.UTITextField.getText();
-	      try {
-	        FileManager.writeStatsToFile(month, max, min, avg, devi, monthlyDev, filePath, targetFarm, targetYear);
-	        this.msgTextField.clear();
-	        this.actionLog.add("Exporting Statistics Task Completed Successfully");
-	        this.msgTextField.setText("Task Completed Succesfully:");
-	        actionFlag = 0;
-	        return;
-	      } catch (Exception e) {
-	        this.msgTextField.clear();
-	        this.msgTextField.setText("Task Failed: " + e.getMessage());
-	        this.actionLog.add("Task Failed: " + e.getMessage());
-	        actionFlag = 0;
-	        return;
-	      }
-	    }
+          String filePath = this.UTITextField.getText();
+          try {
+            FileManager.writeStatsToFile(month, max, min, avg, devi, monthlyDev, filePath, targetFarm, targetYear);
+            this.msgTextField.clear();
+            this.actionLog.add("Exporting Statistics Task Completed Successfully");
+            this.msgTextField.setText("Task Completed Succesfully:");
+            actionFlag = 0;
+            return;
+          } catch (Exception e) {
+            this.msgTextField.clear();
+            this.msgTextField.setText("Task Failed: " + e.getMessage());
+            this.actionLog.add("Task Failed: " + e.getMessage());
+            actionFlag = 0;
+            return;
+          }
+        }
   }
 
   /**
    * Allows the user to create a custom from the GUI
    */
   private void newCustomFarm() {
-    // TODO
+      // TODO
+      String initMessage = "Type your custom farm in the the input text box with the following \n"
+              + "format: Date (YYYY-MM-D), Farm-Id, Milk Wieght (seperated by commas)";
+      this.msgTextField.setText(initMessage);
+      
   }
 
   /**
