@@ -15,7 +15,7 @@ import java.util.HashMap;
  * This class handles reading data from files and also exporting to files. This
  * file has static methods that can be called by the main driver. It has no
  * other purpose other than a helper class
- * 
+ *
  * @author Roland Jiang
  * @author Russel
  */
@@ -24,7 +24,7 @@ public class FileManager {
   /**
    * read the data from a csv file and store it into the Main driver database of
    * farms
-   * 
+   *
    * @param path - path to the file
    * @return message - possible string reporting anything abnormalities
    */
@@ -109,7 +109,7 @@ public class FileManager {
   /**
    * Parses a directory for files and reads the data from a csv file and store
    * it into the Main driver database of farms
-   * 
+   *
    * @param path - path to directory
    * @return message - possible string message that reports abnormalities
    */
@@ -133,26 +133,36 @@ public class FileManager {
 
   /**
    * The following information could be sent to a file
-   * 
+   *
    * @param farmID
    * @throws UnsupportedEncodingException
    * @throws FileNotFoundException
    */
-  public static void writeStatsToFile(String command, String path,
-      String farmID, HashMap<String, Farm> farmMap)
-      throws FileNotFoundException, UnsupportedEncodingException {
-    PrintWriter writer = new PrintWriter(path, "UTF-8");
-    // TODO
-    if (command.equals("Max Sales")) {
-
-    }
+   public static void writeStatsToFile(List<String> months, List<Integer> max, List<Integer> min,
+ 		  List<Float> avg, List<Float> dev, float monthlyDev, String path, String farmID, int year)
+       throws FileNotFoundException, UnsupportedEncodingException {
+     PrintWriter writer = new PrintWriter(path, "UTF-8");
+     writer.println("FarmID: " + farmID + " Year " + year + " Statistics");
+     writer.println("-------------------");
+     for(int i = 0; i < months.size(); i++)
+     {
+     	writer.println(months.get(i) + ":");
+     	writer.println("------------------");
+     	writer.println("Minimum Sale: " + min.get(i));
+     	writer.println("Maximum Sale: " + max.get(i));
+     	writer.println("Average Sales: " + avg.get(i));
+     	writer.println("Deviation in Sales: " + dev.get(i));
+     }
+     writer.println("Deviation for All Months: " + monthlyDev);
+     writer.close();
+     
 
 
 
   }
 
   /**
-   * 
+   *
    * @param path
    * @param farmID
    * @throws FileNotFoundException
@@ -191,7 +201,7 @@ public class FileManager {
   }
 
   /**
-   * 
+   *
    * @param path
    * @param farmID
    * @throws FileNotFoundException

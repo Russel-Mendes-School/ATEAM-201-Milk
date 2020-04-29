@@ -33,7 +33,7 @@ public class Main extends Application {
   // Final Fields
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 600;
-  private static final String APP_TITLE = "ATEAM 201 Milk Weights GUI";
+  private static final String APP_TITLE = "ATEAM 7 Milk Weights GUI";
 
   // Data Field --> FarmID, Farm
   private HashMap<String, Farm> farmMap = new HashMap<String, Farm>();
@@ -339,7 +339,7 @@ public class Main extends Application {
 
   /**
    * Display the command on the screen via a text field
-   * 
+   *
    * @param command - command chosen by the user
    */
   private void showLoadSelection(String command) {
@@ -976,7 +976,123 @@ public class Main extends Application {
    * Export the statistics of the data structure into a text file
    */
   private void newExportStats() {
-    // TODO
+    String targetFarm = "";
+	  int targetYear = 0;
+	  if (actionFlag == 0) {
+	      this.msgTextField.clear();
+	      this.msgTextField.setText("Farm ID,Year: ");
+	      this.actionLog.add("Program Prompts: Farm ID,Year");
+	      this.actionFlag++;
+	      return;
+	    }
+	  if (actionFlag == 1) {
+	      this.actionLog.add("User Args: " + this.UTITextField.getText());
+	      String[] args = this.UTITextField.getText().split(",");
+	      targetFarm = args[0];
+	      targetYear = Integer.parseInt(args[1]);
+	      this.msgTextField.clear();
+
+	      if (!farmMap.containsKey(targetFarm)) {
+	        this.msgTextField.setText("Farm Does Not Exist");
+	        this.actionLog.add("User Farm Does Not Exist");
+	        return;
+	      }
+	      this.msgTextField.clear();
+	      this.actionLog.add("Program Prompts File Export Path");
+	      this.msgTextField.setText("Please give export file path:");
+	      actionFlag++;
+	      return;
+	    }
+	    if (actionFlag == 2) {
+	      this.actionLog.add("User Args: " + this.UTITextField.getText());
+	      //calculate all the stats
+	      List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
+	      List<String> month = new ArrayList<String>();
+	      List<Integer> max = new ArrayList<Integer>();
+	      List<Integer> min = new ArrayList<Integer>();
+	      List<Float> devi = new ArrayList<Float>();
+	      List<Float> avg = new ArrayList<Float>();
+
+	      for (Month m : months) {
+	    	  month.add(m.getName());
+	          int[] days = m.getDays();
+	          int minMilk = days[0];
+	          int maxMilk = 0;
+	          int runningTotal = 0;
+	          //calculate minsales
+	          for (int i = 0; i < days.length; i++) {
+	            if (days[i] < minMilk) {
+	              minMilk = days[i];
+	            }
+	          }
+	          min.add(minMilk);
+	          //calculate maxsales
+	          for (int i = 0; i < days.length; i++) {
+	              if (days[i] > maxMilk) {
+	                maxMilk = days[i];
+	              }
+	            }
+	          max.add(maxMilk);
+	          //calculate averagesales
+	          for (int i = 0; i < days.length; i++) {
+	              runningTotal += days[i];
+	            }
+	          float avgMilk = runningTotal / days.length;
+	          avg.add(avgMilk);
+	      }
+	      //calculate the deviation in sales
+	      float monthlyDev = 0;
+	      float monthlyRunningTotal = 0;
+	      float monthlyAvg = 0;
+	      //Dev = sqrt((sum of mean - xi)^2/N)
+	      for (Month m : months) {
+	        int[] days = m.getDays();
+	        float runningTotal = 0;
+	        for (int i = 0; i < days.length; i++) {
+	          runningTotal += days[i];
+	        }
+
+	        monthlyRunningTotal += runningTotal; // deviation for months
+
+	        float avgMilk = runningTotal / days.length;
+
+	        runningTotal = 0;
+	        for (int i = 0; i < days.length; i++) {
+	          runningTotal += (avgMilk - days[i]) * (avgMilk - days[i]);
+	        }
+	        runningTotal /= days.length;
+	        float dev = (float) Math.pow(runningTotal, .5);
+	        devi.add(dev);
+	      }
+	      monthlyAvg = monthlyRunningTotal / months.size();
+	      for (Month m : months) {
+	        int[] days = m.getDays();
+	        float totalMilk = 0;
+	        for (int i = 0; i < days.length; i++) {
+	          totalMilk += days[i];
+	        }
+	        monthlyDev += (monthlyAvg - totalMilk) * (monthlyAvg - totalMilk);
+	      }
+	      monthlyDev /= months.size();
+	      monthlyDev = (float) Math.pow(monthlyDev, .5);
+
+
+	      String filePath = this.UTITextField.getText();
+	      try {
+	        FileManager.writeStatsToFile(month, max, min, avg, devi, monthlyDev, filePath, targetFarm, targetYear);
+	        this.msgTextField.clear();
+	        this.actionLog.add("Exporting Statistics Task Completed Successfully");
+	        this.msgTextField.setText("Task Completed Succesfully:");
+	        actionFlag = 0;
+	        return;
+	      } catch (Exception e) {
+	        this.msgTextField.clear();
+	        this.msgTextField.setText("Task Failed: " + e.getMessage());
+	        this.actionLog.add("Task Failed: " + e.getMessage());
+	        actionFlag = 0;
+	        return;
+	      }
+	    }
   }
 
   /**
