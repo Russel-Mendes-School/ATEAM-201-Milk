@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class handles reading data from files and also exporting to files. This
@@ -119,7 +120,9 @@ public class FileManager {
     File[] files = new File(path).listFiles();
     String message = null;
     String response = "";
-
+    // parse directory for all files. Even subdirectories for files
+    // Try to add the file as a farm. The user has to be sure that the files are
+    // data files
     for (File file : files) {
       response =
           FileManager.readFromFile(file.getAbsolutePath(), farmMap, farmNames);
@@ -134,28 +137,33 @@ public class FileManager {
   /**
    * The following information could be sent to a file
    *
-   * @param farmID
+   * @param farmID - id of target farm
    * @throws UnsupportedEncodingException
    * @throws FileNotFoundException
    */
-   public static void writeStatsToFile(List<String> months, List<Integer> max, List<Integer> min,
- 		  List<Float> avg, List<Float> dev, float monthlyDev, String path, String farmID, int year)
-       throws FileNotFoundException, UnsupportedEncodingException {
-     PrintWriter writer = new PrintWriter(path, "UTF-8");
-     writer.println("FarmID: " + farmID + " Year " + year + " Statistics");
-     writer.println("-------------------");
-     for(int i = 0; i < months.size(); i++)
-     {
-     	writer.println(months.get(i) + ":");
-     	writer.println("------------------");
-     	writer.println("Minimum Sale: " + min.get(i));
-     	writer.println("Maximum Sale: " + max.get(i));
-     	writer.println("Average Sales: " + avg.get(i));
-     	writer.println("Deviation in Sales: " + dev.get(i));
-     }
-     writer.println("Deviation for All Months: " + monthlyDev);
-     writer.close();
-     
+  public static void writeStatsToFile(List<String> months, List<Integer> max,
+      List<Integer> min, List<Float> avg, List<Float> dev, float monthlyDev,
+      String path, String farmID, int year)
+      throws FileNotFoundException, UnsupportedEncodingException {
+
+
+    // Create a header
+    PrintWriter writer = new PrintWriter(path, "UTF-8");
+    writer.println("FarmID: " + farmID + " Year " + year + " Statistics");
+    writer.println("-------------------");
+
+
+    // Export Stats for the farm
+    for (int i = 0; i < months.size(); i++) {
+      writer.println(months.get(i) + ":");
+      writer.println("------------------");
+      writer.println("Minimum Sale: " + min.get(i));
+      writer.println("Maximum Sale: " + max.get(i));
+      writer.println("Average Sales: " + avg.get(i));
+      writer.println("Deviation in Sales: " + dev.get(i));
+    }
+    writer.println("Deviation for All Months: " + monthlyDev);
+    writer.close();
 
 
 
@@ -171,10 +179,16 @@ public class FileManager {
   public static void exportFarmToFile(String path, String farmID,
       HashMap<String, Farm> farmMap)
       throws FileNotFoundException, UnsupportedEncodingException {
+
+    // Create Header
     PrintWriter writer = new PrintWriter(path, "UTF-8");
     writer.println("Date,FarmID,Weight");
     Farm targetFarm = farmMap.get(farmID);
 
+
+
+    // For all data points in the target farm. Create new line with the data
+    // Formate:Date,ID,Weight
     ArrayList<Month> allMonths = targetFarm.getAllMonths();
     String dataString = "";
 
@@ -209,8 +223,9 @@ public class FileManager {
    */
   public static void exportLogsToFile(String path, ArrayList<String> logs)
       throws FileNotFoundException, UnsupportedEncodingException {
-    PrintWriter writer = new PrintWriter(path, "UTF-8");
 
+    PrintWriter writer = new PrintWriter(path, "UTF-8");
+    // For every line in logs, write a new line
     for (String line : logs) {
       writer.println(line);
     }
