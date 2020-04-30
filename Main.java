@@ -247,7 +247,8 @@ public class Main extends Application {
     // Lambda Functions
     execButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
             e -> {
-                try {
+                try { // prevent index out of bounds error when execute button is clicked without
+                      // using a command
                     executeSelection();
                 }
                 catch(ArrayIndexOutOfBoundsException x) {
