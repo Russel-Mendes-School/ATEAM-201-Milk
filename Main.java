@@ -123,7 +123,7 @@ public class Main extends Application {
     
     // Load Combo box
     // The blank option allows the combobox have a "empty" screen
-    String[] loadOptions = {"Load File", "Load Dir", ""};
+    String[] loadOptions = {"Load File", "Load Directory", ""};
     loadVBox = new VBox();
     loadLabel = new Label("Load Commands    ");
     loadLabel.setStyle("-fx-font-weight: bold");
@@ -138,7 +138,7 @@ public class Main extends Application {
 
     // Edit Combo box
     String[] editOptions =
-        {"Edit File", "Edit Farm", "New Farm", "Delete Farm", ""};
+        {"Edit Farm", "New Farm", "Delete Farm", ""};
     editVBox = new VBox();
     editLabel = new Label("Edit Commands    ");
     editLabel.setStyle("-fx-font-weight: bold");
@@ -325,8 +325,7 @@ public class Main extends Application {
 
     // Depending on the command chosen by the user execute the command
     if (commandFlag.equals("Load File")) this.loadDataFromCSV();
-    else if (commandFlag.equals("Load Dir")) this.loadDataFromDir();
-    else if (commandFlag.equals("Edit File")) this.editFile();
+    else if (commandFlag.equals("Load Directory")) this.loadDataFromDir();
     else if (commandFlag.equals("Edit Farm")) this.editFarm();
     else if (commandFlag.equals("Delete Farm")) this.deleteFarm();
     else if (commandFlag.equals("Export Farm")) this.newExportFarmToFile();
@@ -389,20 +388,22 @@ public class Main extends Application {
    */
   private void loadDataFromCSV() {
 
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Enter File Path: ");
       this.actionLog.add("Program Prompted for File Path");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
-
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String path = this.UTITextField.getText();
+      
+      // Read file
       String response =
           FileManager.readFromFile(path, this.farmMap, this.farmNames);
-
+      
+      // Update text fields
       this.msgTextField.clear();
       if (response == null) {
         this.msgTextField.setText("Task Completed Succesfully");
@@ -422,21 +423,23 @@ public class Main extends Application {
    * Load every file in a folder into the data structure
    */
   private void loadDataFromDir() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("File Folder Path: ");
       this.actionLog.add("Program Prompts File Folder Path");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
-
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String path = this.UTITextField.getText();
+      
+      // Read files
       String response =
           FileManager.readFromDir(path, this.farmMap, this.farmNames);
+      
+      // Update text fields
       this.msgTextField.clear();
-
       if (response == null) {
         this.msgTextField.setText("Task Completed Succesfully");
         this.actionLog.add("Reading from Dir Completed Successfully");
@@ -461,19 +464,19 @@ public class Main extends Application {
    * Delete a farm from the data structure
    */
   private void deleteFarm() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Purge Farm ID: ");
       this.actionLog.add("Program Prompts Purge ID");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
-
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String deleteID = this.UTITextField.getText();
       farmMap.remove(deleteID);
 
+      // Update text fields
       this.msgTextField.clear();
       this.msgTextField.setText("Task Completed Successfully");
       this.actionLog.add("Farm Delete Completed Successfully");
@@ -481,26 +484,19 @@ public class Main extends Application {
       return;
     }
   }
-  
-  /**
-   * TODO
-   */
-  private void editFile() {
-	    // TODO
-  }
 
   /**
    * Edits a specific day of a farm
    */
   private void editFarm() {
-	  if (actionFlag == 0) {
+	  if (actionFlag == 0) { // Upon executing this command
           this.msgTextField.clear();
           this.msgTextField.setText("Edit the milk for a day of a farm: farmID,YYYY-MM-DD,milk");
           this.actionLog.add("Program Prompted for Day");
           this.actionFlag++;
           return;
         }
-        if (actionFlag == 1) {
+      if (actionFlag == 1) { // Upon executing this command again
           this.actionLog.add("User Args: " + this.UTITextField.getText());
           String[] args = this.UTITextField.getText().split(",");
           String[] dateComponents = args[1].split("-");
@@ -513,6 +509,7 @@ public class Main extends Application {
     		  
     	  }
     	  
+    	  // Update text fields
     	  this.msgTextField.setText("Task Completed Successfully");
           this.actionLog.add("Edited Milk Completed Successfully");
           this.UTITextField.clear();
@@ -525,18 +522,19 @@ public class Main extends Application {
    * Allows the user to create a custom from the GUI
    */
   private void newCustomFarm() {
-      if (actionFlag == 0) {
+      if (actionFlag == 0) { // Upon executing this command
           this.msgTextField.clear();
           this.msgTextField.setText("Enter desired Farm ID: ");
           this.actionLog.add("Program Prompted for Farm ID");
           this.actionFlag++;
           return;
         }
-        if (actionFlag == 1) {
+      if (actionFlag == 1) { // Upon executing this command again
           this.actionLog.add("User Args: " + this.UTITextField.getText());
     	  String farmID = this.UTITextField.getText();
     	  farmMap.put(farmID, new Farm(farmID));
     	  
+    	  // Update text fields
     	  this.msgTextField.setText("Task Completed Successfully");
           this.actionLog.add("Create Custom Farm Completed Successfully");
           this.UTITextField.clear();
@@ -550,14 +548,14 @@ public class Main extends Application {
   //==========================================================================================
   
   private void newExportFarmToFile() {
-	    if (actionFlag == 0) {
+	    if (actionFlag == 0) { // Upon executing this command
 	      this.msgTextField.clear();
 	      this.msgTextField.setText("Please Give Target Farm: ");
 	      this.actionLog.add("Program Prompts Target Farm");
 	      this.actionFlag++;
 	      return;
 	    }
-	    if (actionFlag == 1) {
+	    if (actionFlag == 1) { // Upon executing this command again
 	      this.actionLog.add("User Args: " + this.UTITextField.getText());
 	      String farmID = this.UTITextField.getText();
 
@@ -570,17 +568,20 @@ public class Main extends Application {
 	      }
 	      this.exportFarmID = farmID;
 
+	      // Update text fields
 	      this.msgTextField.clear();
 	      this.actionLog.add("Program Prompts File Export Path");
 	      this.msgTextField.setText("Please give export file path:");
 	      actionFlag++;
 	      return;
 	    }
-	    if (actionFlag == 2) {
+	    if (actionFlag == 2) { // Upon executing this command third time
 	      this.actionLog.add("User Args: " + this.UTITextField.getText());
 	      String filePath = this.UTITextField.getText();
 	      try {
 	        FileManager.exportFarmToFile(filePath, this.exportFarmID, farmMap);
+	        
+	        // Update text fields
 	        this.msgTextField.clear();
 	        this.actionLog.add("Exporting Farm Task Completed Successfully");
 	        this.msgTextField.setText("Task Completed Succesfully:");
@@ -602,14 +603,14 @@ public class Main extends Application {
   private void newExportStats() {
     String targetFarm = "";
       int targetYear = 0;
-      if (actionFlag == 0) {
+      if (actionFlag == 0) { // Upon clicking the drop down
           this.msgTextField.clear();
           this.msgTextField.setText("Farm ID,Year: ");
           this.actionLog.add("Program Prompts: Farm ID,Year");
           this.actionFlag++;
           return;
         }
-      if (actionFlag == 1) {
+      if (actionFlag == 1) { // Upon executing the command
           this.actionLog.add("User Args: " + this.UTITextField.getText());
           String[] args = this.UTITextField.getText().split(",");
           targetFarm = args[0];
@@ -621,15 +622,17 @@ public class Main extends Application {
             this.actionLog.add("User Farm Does Not Exist");
             return;
           }
+          
+          // Update text fields
           this.msgTextField.clear();
           this.actionLog.add("Program Prompts File Export Path");
           this.msgTextField.setText("Please give export file path:");
           actionFlag++;
           return;
         }
-        if (actionFlag == 2) {
+        if (actionFlag == 2) { // Getting next input
           this.actionLog.add("User Args: " + this.UTITextField.getText());
-          //calculate all the stats
+          // Calculate all the stats
           List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
           List<String> month = new ArrayList<String>();
           List<Integer> max = new ArrayList<Integer>();
@@ -643,32 +646,32 @@ public class Main extends Application {
               int minMilk = days[0];
               int maxMilk = 0;
               int runningTotal = 0;
-              //calculate minsales
+              // Calculate minsales
               for (int i = 0; i < days.length; i++) {
                 if (days[i] < minMilk) {
                   minMilk = days[i];
                 }
               }
               min.add(minMilk);
-              //calculate maxsales
+              // Calculate maxsales
               for (int i = 0; i < days.length; i++) {
                   if (days[i] > maxMilk) {
                     maxMilk = days[i];
                   }
                 }
               max.add(maxMilk);
-              //calculate averagesales
+              // Calculate averagesales
               for (int i = 0; i < days.length; i++) {
                   runningTotal += days[i];
                 }
               float avgMilk = runningTotal / days.length;
               avg.add(avgMilk);
           }
-          //calculate the deviation in sales
+          // Calculate the deviation in sales
           float monthlyDev = 0;
           float monthlyRunningTotal = 0;
           float monthlyAvg = 0;
-          //Dev = sqrt((sum of mean - xi)^2/N)
+          // Dev = sqrt((sum of mean - xi)^2/N)
           for (Month m : months) {
             int[] days = m.getDays();
             float runningTotal = 0;
@@ -700,10 +703,12 @@ public class Main extends Application {
           monthlyDev /= months.size();
           monthlyDev = (float) Math.pow(monthlyDev, .5);
 
-
+          // Get path and write
           String filePath = this.UTITextField.getText();
           try {
             FileManager.writeStatsToFile(month, max, min, avg, devi, monthlyDev, filePath, targetFarm, targetYear);
+            
+            // Update text fields
             this.msgTextField.clear();
             this.actionLog.add("Exporting Statistics Task Completed Successfully");
             this.msgTextField.setText("Task Completed Succesfully:");
@@ -723,10 +728,11 @@ public class Main extends Application {
    * Show the logs of the entire program so far
    */
   private void showLogs() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.actionFlag = 0;
 
+      // Create Vbox of lines
       VBox masterVbox = new VBox();
       for (int i = 0; i < this.actionLog.size(); i++) {
         Label tmpLabel = new Label();
@@ -734,6 +740,7 @@ public class Main extends Application {
         masterVbox.getChildren().add(tmpLabel);
       }
 
+      // Makes it scrollable
       ScrollPane sp = new ScrollPane();
       sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
       sp.prefHeightProperty().set(300);
@@ -741,24 +748,25 @@ public class Main extends Application {
       this.borderPaneRoot.setBottom(sp);
       return;
     }
-
   }
 
   /**
    * Export the logs to a file defined by the user
    */
   private void exportLogsToFile() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Please Give Path: ");
       this.actionLog.add("Program Prompts: Path");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String filePath = this.UTITextField.getText();
       try {
+    	  
+    	// Exporting and updating text fields
         FileManager.exportLogsToFile(filePath, this.actionLog);
         this.msgTextField.clear();
         this.actionLog.add("Exporting Farm Task Completed Successfully");
@@ -785,14 +793,14 @@ public class Main extends Application {
    * Sales =
    */
   private void showMaxSales() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
@@ -805,7 +813,7 @@ public class Main extends Application {
         return;
       }
 
-      // Vbox
+      // Vbox for footer
       VBox vBox = new VBox();
       ObservableList list = vBox.getChildren();
       ArrayList<TextField> lines = new ArrayList<TextField>();
@@ -824,6 +832,7 @@ public class Main extends Application {
       }
       list.addAll(lines);
 
+      // Update text fields
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.actionLog.add("Max Sales Completed Successfully");
@@ -837,14 +846,14 @@ public class Main extends Application {
    * Shows the minimum sales a farm made for a given month out of x months
    */
   private void showMinSales() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
@@ -857,6 +866,7 @@ public class Main extends Application {
         return;
       }
 
+      // Vbox for footer
       VBox vBox = new VBox();
       ObservableList list = vBox.getChildren();
       ArrayList<TextField> lines = new ArrayList<TextField>();
@@ -875,6 +885,7 @@ public class Main extends Application {
       }
       list.addAll(lines);
 
+      // Updates text fields
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.actionLog.add("Min Sales Task Completed Successfully");
@@ -888,14 +899,14 @@ public class Main extends Application {
    * Shows the average sales a farm made monthly
    */
   private void showAvgSales() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionLog.add("System Prompted: Farm ID,Year");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
@@ -908,6 +919,7 @@ public class Main extends Application {
         return;
       }
 
+      // Vbox for footer
       VBox vBox = new VBox();
       ObservableList list = vBox.getChildren();
       ArrayList<TextField> lines = new ArrayList<TextField>();
@@ -925,6 +937,7 @@ public class Main extends Application {
       }
       list.addAll(lines);
 
+      // Updating text fields
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.actionLog.add("Average Task Completed Successfully");
@@ -938,14 +951,14 @@ public class Main extends Application {
    * Shows the deviation in sales for a specified farm
    */
   private void showDevSales() {
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionLog.add("Program Prompts: Farm ID,Year");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
       String targetFarm = args[0];
@@ -958,7 +971,7 @@ public class Main extends Application {
         return;
       }
 
-      // Vbox
+      // Vbox for footer
       VBox vBox = new VBox();
       ObservableList list = vBox.getChildren();
       ArrayList<TextField> lines = new ArrayList<TextField>();
@@ -1004,6 +1017,7 @@ public class Main extends Application {
       lines.add(new TextField("Deviation For All Months: " + monthlyDev));
       list.addAll(lines);
 
+      // Updates text fields
       this.borderPaneRoot.setBottom(vBox);
       this.msgTextField.setText("Task Completed Successfully");
       this.actionLog.add("Standard Deviation Task Completed Successfully");
@@ -1028,14 +1042,14 @@ public class Main extends Application {
     String targetFarm;
     int targetYear;
 
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Farm ID,Year: ");
       this.actionFlag++;
       this.actionLog.add("Program Prompted: Farm ID,Year");
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
       this.actionLog.add("User Args: " + this.UTITextField.getText());
 
       String[] args = this.UTITextField.getText().split(",");
@@ -1106,15 +1120,15 @@ public class Main extends Application {
   private void annualReport() {
     int targetYear;
 
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Year: ");
       this.actionLog.add("Program Prompts For Year");
       this.actionFlag++;
       return;
     }
-    if (actionFlag == 1) {
-
+    if (actionFlag == 1) { // Upon executing this command again
+ 
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String args = this.UTITextField.getText();
       targetYear = Integer.parseInt(args);
@@ -1188,14 +1202,14 @@ public class Main extends Application {
     int targetYear = 0;
     int targetMonth = 0;
 
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField.setText("Numerically: Year,Month: ");
       this.actionFlag++;
       this.actionLog.add("Program Prompts: Year,Month");
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
 
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(",");
@@ -1210,6 +1224,7 @@ public class Main extends Application {
       List<String> tempFarmNames = farmNames;
       tempFarmNames.sort(Comparator.comparing(String::toString));
 
+      // Calculate total milk
       float totalMilkOfEveryFarmMonthly = 0;
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
@@ -1226,6 +1241,7 @@ public class Main extends Application {
 
       lines.add("Total: " + totalMilkOfEveryFarmMonthly);
 
+      // Calculate percentages
       for (String targetFarm : tempFarmNames) {
         List<Month> months =
             farmMap.get(targetFarm).getMonthsForYear(targetYear);
@@ -1241,6 +1257,7 @@ public class Main extends Application {
             targetFarm + ": " + totalMilkOfFarmInMonth + " (" + percent + "%)");
       }
 
+      // Vbox for footer
       VBox masterVbox = new VBox();
       for (int i = 0; i < lines.size(); i++) {
         Label tmpLabel = new Label();
@@ -1275,7 +1292,7 @@ public class Main extends Application {
     int startDay = 0;
     int endDay = 0;
 
-    if (actionFlag == 0) {
+    if (actionFlag == 0) { // Upon executing this command
       this.msgTextField.clear();
       this.msgTextField
           .setText("Numerically Start:End-> Year,Month,Day:Month,Day");
@@ -1283,14 +1300,15 @@ public class Main extends Application {
       this.actionLog.add("Program Prompted Year,Month,Day:Month,Day");
       return;
     }
-    if (actionFlag == 1) {
+    if (actionFlag == 1) { // Upon executing this command again
 
       this.actionLog.add("User Args: " + this.UTITextField.getText());
       String[] args = this.UTITextField.getText().split(":");
+      
+      // Parsing date components
       targetYear = Integer.parseInt(args[0].split(",")[0]);
       startMonth = Integer.parseInt(args[0].split(",")[1]);
       startDay = Integer.parseInt(args[0].split(",")[2]);
-
       endMonth = Integer.parseInt(args[1].split(",")[0]);
       endDay = Integer.parseInt(args[1].split(",")[1]);
       this.msgTextField.clear();
@@ -1380,6 +1398,7 @@ public class Main extends Application {
             targetFarm + ": " + totalMilkOfFarmInRange + " (" + percent + "%)");
       }
 
+      // Vbox for footer
       VBox masterVbox = new VBox();
       for (int i = 0; i < lines.size(); i++) {
         Label tmpLabel = new Label();
@@ -1410,6 +1429,7 @@ public class Main extends Application {
    */
   private List<Month> getMonths(String targetFarm, int targetYear) {
 	  List<Month> months = farmMap.get(targetFarm).getMonthsForYear(targetYear);
+	  // Sort so months are in order 1-12
       Collections.sort(months, new Comparator<Month>() {
         public int compare(Month m1, Month m2) {
           return m1.getMonthNum() - m2.getMonthNum();
