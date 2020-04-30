@@ -1,4 +1,4 @@
-# ATEAM-201-Milk README
+# ATEAM-7-Milk README
 
 ## Student Info
 Course: cs400
@@ -6,14 +6,14 @@ Semester: Fall 2019
 Project name: Milk Weights
 Team Memebers:
 1. Russel Mendes, Lec 002, rmendes@wisc.edu
-2. Akshay Bolda, Lec 001, bolda@wisc.edu
+2. Akshay Bodla, Lec 001, bolda@wisc.edu
 3. Roland Jiang, Lec 002, rjian45@wisc.edu
 4. Will Hu, Lec 002, whu72@wisc.edu
 5. Ben Rinvelt, Lec 002, Rinvelt@wisc.edu
 
-Russel Mendes, Will Hu, and Roland Jiang were on the same xteam
-
-
+Russel Mendes, Will Hu, and Roland Jiang were on the same xteam 201
+Akshay was part of xteam 138
+Ben was part of xteam 241
 
 # FEATURES
 * upload a single file or an entire directory of csv files of data
@@ -25,7 +25,7 @@ Russel Mendes, Will Hu, and Roland Jiang were on the same xteam
 # User Guide
 ### Buttons
 * EXECUTE: this buttons moves the GUI to the next state
-* PURGE: clears the GUI. This also clears up any command selection problems
+* CLEAR: clears the GUI. This also clears up any command selection problems
 * EXIT PROGRAM: exits the GUI
 ### Selection Box
 * Load Commands
@@ -33,7 +33,6 @@ Russel Mendes, Will Hu, and Roland Jiang were on the same xteam
     * Load Dir: load every file in the directory. This function will parse subfolders as well
     * Null Command: This command does nothing but acts as a place holder
 * Edit Commands
-    * Edit File: edit a file in the GUI
     * Edit Farm: edit a farm in the GUI
     * New Farm: create a new farm from the gui
     * Delete Farm: delete a farm from the database
@@ -62,10 +61,15 @@ Russel Mendes, Will Hu, and Roland Jiang were on the same xteam
 * java 11.0.6
 
 # FUTURE FEATURES
-* Edit Farm
-* New Farm
+* Display min, max, average, for all farms for user-specified: month-year
 * Edit File
+* More responsive UI in the future
+* Multi-line message output
+* Load File and Get stats automatically
 
 # BUG REPORT
-* TODO
+* Index out of Bounds when functions are called when there are no files in the database
+* Sometimes when the execute button is spammed or an command is failed (with bad input or failure to complete) it freezes. Current fix is to use the clear button and restart
+ 
+
 
